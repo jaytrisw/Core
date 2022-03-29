@@ -26,7 +26,8 @@
       buildConfiguration = "Debug"
       selectedDebuggerIdentifier = "Xcode.DebuggerFoundation.Debugger.LLDB"
       selectedLauncherIdentifier = "Xcode.DebuggerFoundation.Launcher.LLDB"
-      shouldUseLaunchSchemeArgsEnv = "YES">
+      shouldUseLaunchSchemeArgsEnv = "YES"
+      codeCoverageEnabled = "YES">
       <Testables>
          <TestableReference
             skipped = "NO">
@@ -56,6 +57,16 @@
                BuildableName = "NetworkServiceTests"
                BlueprintName = "NetworkServiceTests"
                ReferencedContainer = "container:..">
+            </BuildableReference>
+         </TestableReference>
+         <TestableReference
+            skipped = "NO">
+            <BuildableReference
+               BuildableIdentifier = "primary"
+               BlueprintIdentifier = "331B9A0527F10C3B00E45268"
+               BuildableName = "DevelopmentTests.xctest"
+               BlueprintName = "DevelopmentTests"
+               ReferencedContainer = "container:Development.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>

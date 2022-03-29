@@ -172,7 +172,7 @@ public extension NSLayoutConstraint {
     
 }
 
-extension NSLayoutConstraint {
+public extension NSLayoutConstraint {
     
     func usingPriority(
         _ priority: UILayoutPriority) -> NSLayoutConstraint {

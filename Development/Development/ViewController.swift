@@ -33,7 +33,7 @@ class ViewController: UIViewController {
                         
                         let configuration = CUIBannerView.Configuration(
                             colorStyle: colorStyle,
-                            position: Bool.random() ? .top : .bottom,
+                            position: .top, //Bool.random() ? .top : .bottom,
                             animation: .default)
                                                 
                         let model = CUIBannerView.Model(
@@ -90,6 +90,14 @@ class ViewController: UIViewController {
             UIStackView()
                 .addingArrangedSubviews([
                     label,
+                    UITextField()
+                        .setting(\.backgroundColor, .blue),
+                    UITextField()
+                        .setting(\.backgroundColor, .blue),
+                    UITextField()
+                        .setting(\.backgroundColor, .blue),
+                    UITextField()
+                        .setting(\.backgroundColor, .blue),
                     button
                 ])
                 .setting(\UIStackView.axis, .vertical)
@@ -100,7 +108,9 @@ class ViewController: UIViewController {
                         equal(\.leadingAnchor, constant: 40),
                         equal(\.trailingAnchor, constant: -40),
                         equal(\.centerXAnchor),
-                        equal(\.centerYAnchor)
+                        equal(\.centerYAnchor),
+                        equal(\.topAnchor, \.safeAreaLayoutGuide.topAnchor),
+                        equal(\.bottomAnchor, \.keyboardSafeLayoutGuide.topAnchor, constant: -24)
                     ])
             
         }
