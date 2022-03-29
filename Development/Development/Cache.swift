@@ -107,119 +107,11 @@ final class RemoteImageCache: Cache<URL, UIImage> {
 }
 
 import Core
-import CoreUI
-
-public struct PreferenceKey<WrappedType> {
-    
-    public let type: WrappedType.Type
-    public let key: Key
-    
-    public init(
-        _ type: WrappedType.Type = WrappedType.self,
-        key: Key) {
-            self.type = type
-            self.key = key
-        }
-    
-}
 
 extension PreferenceKey {
     
     public var boolKey: PreferenceKey<Bool> {
         return PreferenceKey<Bool>(key: "someKey")
     }
-    
-}
-
-public protocol PersistablePreferences {
-    
-    func get<W: Codable>(
-        forKey preferenceKey: PreferenceKey<W>) -> W?
-    func set<W: Codable>(
-        _ value: W,
-        forKey preferenceKey: PreferenceKey<W>)
-    func remove<W: Codable>(
-        forKey preferenceKey: PreferenceKey<W>)
-    
-}
-
-final public class PersistentPreferencesInMemory {
-    
-    // MARK: Properties
-    private var storage: [Key: Any]
-    
-    // MARK: Life Cycle
-    public init(storage: [Key: Any] = [:]) {
-        self.storage = storage
-    }
-    
-}
-
-extension PersistentPreferencesInMemory: PersistablePreferences {
-    
-    public func get<W: Codable>(
-        forKey preferenceKey: PreferenceKey<W>) -> W? {
-            self.storage[preferenceKey.key] as? W
-        }
-    
-    public func set<W: Codable>(
-        _ value: W,
-        forKey preferenceKey: PreferenceKey<W>) {
-            self.storage[preferenceKey.key] = value
-        }
-    
-    public func remove<W: Codable>(
-        forKey preferenceKey: PreferenceKey<W>) {
-            guard self.get(forKey: preferenceKey) != nil else {
-                return
-            }
-            self.storage.removeValue(forKey: preferenceKey.key)
-        }
-    
-}
-
-final public class PersistentPreferencesUserDefaults {
-    
-    private let userDefaults: UserDefaults
-    
-    public init(
-        _ userDefaults: UserDefaults) {
-            self.userDefaults = userDefaults
-        }
-    
-}
-
-extension PersistablePreferences {
-    
-    static var userDefaults: PersistablePreferences {
-        return PersistentPreferencesUserDefaults(.standard)
-    }
-    
-    static var inMemory: PersistablePreferences {
-        return PersistentPreferencesInMemory()
-    }
-    
-}
-
-extension PersistentPreferencesUserDefaults: PersistablePreferences {
-    
-    public func get<W: Codable>(
-        forKey preferenceKey: PreferenceKey<W>) -> W? {
-            self.userDefaults.object(forKey: preferenceKey.key)
-        }
-    
-    public func set<W: Codable>(
-        _ value: W,
-        forKey preferenceKey: PreferenceKey<W>) {
-            self.userDefaults.set(value, forKey: preferenceKey.key)
-        }
-    
-    public func remove<W: Codable>(
-        forKey preferenceKey: PreferenceKey<W>) {
-            guard self.get(forKey: preferenceKey) != nil else {
-                return
-            }
-            self.userDefaults.removeObject(forKey: preferenceKey.key)
-        }
     
 }
