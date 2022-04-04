@@ -23,8 +23,7 @@ let package = Package(
             name: "CoreTest",
             targets: ["CoreTest"]),
     ],
-    dependencies: [
-    ],
+    dependencies: [],
     targets: [
         .target(
             name: "Core",
@@ -46,10 +45,7 @@ let package = Package(
             dependencies: ["Core", "Log"]),
         .testTarget(
             name: "NetworkServiceTests",
-            dependencies: [
-                "NetworkService",
-                "CoreTest"
-            ]),
+            dependencies: ["NetworkService", "CoreTest"]),
         .target(
             name: "CoreTest",
             dependencies: ["Core", "NetworkService"])

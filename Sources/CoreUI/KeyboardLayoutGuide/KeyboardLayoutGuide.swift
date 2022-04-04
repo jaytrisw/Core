@@ -131,9 +131,11 @@ private extension UILayoutGuide {
     
     func constraining(
         _ keyPath: KeyPath<UILayoutGuide, NSLayoutDimension>,
-        toConstant constant: CGFloat) {
+        toConstant constant: CGFloat,
+        priority: UILayoutPriority = .required) {
             self[keyPath: keyPath]
                 .constraint(equalToConstant: constant)
+                .usingPriority(priority)
                 .activating()
         }
     

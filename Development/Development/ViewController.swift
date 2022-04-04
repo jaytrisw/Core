@@ -20,7 +20,7 @@ class ViewController: UIViewController {
             buttonConfiguration.title = "Present Banner"
             buttonConfiguration.image = UIImage(systemName: "platter.filled.top.iphone")
             buttonConfiguration.imagePadding = 6
-            buttonConfiguration.imagePlacement = .leading
+            buttonConfiguration.imagePlacement = .trailing
                         
             let button = UIButton(
                 primaryAction: UIAction(
@@ -33,7 +33,7 @@ class ViewController: UIViewController {
                         
                         let configuration = CUIBannerView.Configuration(
                             colorStyle: colorStyle,
-                            position: .top, //Bool.random() ? .top : .bottom,
+                            position: Bool.random() ? .top : .bottom,
                             animation: .default)
                                                 
                         let model = CUIBannerView.Model(
@@ -86,18 +86,10 @@ class ViewController: UIViewController {
                 .setting(\CUILabel.textAlignment, .center)
                 .setting(\CUILabel.typography, .systemTypography(withSize: 40, weight: .heavy))
                 .usingAutoLayout()
-                        
+            
             UIStackView()
                 .addingArrangedSubviews([
                     label,
-                    UITextField()
-                        .setting(\.backgroundColor, .blue),
-                    UITextField()
-                        .setting(\.backgroundColor, .blue),
-                    UITextField()
-                        .setting(\.backgroundColor, .blue),
-                    UITextField()
-                        .setting(\.backgroundColor, .blue),
                     button
                 ])
                 .setting(\UIStackView.axis, .vertical)
@@ -107,10 +99,8 @@ class ViewController: UIViewController {
                     withConstraints: [
                         equal(\.leadingAnchor, constant: 40),
                         equal(\.trailingAnchor, constant: -40),
-                        equal(\.centerXAnchor),
-                        equal(\.centerYAnchor),
                         equal(\.topAnchor, \.safeAreaLayoutGuide.topAnchor),
-                        equal(\.bottomAnchor, \.keyboardSafeLayoutGuide.topAnchor, constant: -24)
+                        equal(\.bottomAnchor, \.keyboardLayoutGuide.topAnchor, constant: -24)
                     ])
             
         }
@@ -120,41 +110,48 @@ class ViewController: UIViewController {
         super.viewDidLoad()
          
         // openssl s_client -servername www.guamdiveguide.com -connect www.guamdiveguide.com:443 | openssl x509 -pubkey -noout | openssl rsa -pubin -outform der | openssl dgst -sha256 -binary | openssl enc -base64
-        let networkService = URLSessionService(
-            protectedHosts: [
-                "guamdiveguide.com": "NpzUJIiwktzVeUW/NTPu3B6jSmG2mNhae0DgWWfSSfQ="
-            ],
-            configuration: .ephemeral,
-            logger: Log)
+//        let networkService = URLSessionService(
+//            protectedHosts: [
+//                "guamdiveguide.com": "NpzUJIiwktzVeUW/NTPu3B6jSmG2mNhae0DgWWfSSfQ="
+//            ],
+//            configuration: .ephemeral,
+//            logger: Log)
         
-        // https://jsonplaceholder.typicode.com/posts/1
-        let endpoint = Endpoint(
-            scheme: .https,
-            host: "www.guamdiveguide.com",
-            path: "index.php")
-
-        let request = Request(
-            method: .post,
-            endpoint: endpoint,
-            kind: .request(parameters: [:]))
+//        // https://jsonplaceholder.typicode.com/posts/1
+//        let endpoint = Endpoint(
+//            scheme: .https,
+//            host: "www.guamdiveguide.com",
+//            path: "index.php")
+//
+//        let request = Request(
+//            method: .post,
+//            endpoint: endpoint,
+//            kind: .request(parameters: [:]))
         
-        networkService.dataPublisher(request: request, progressHandler: nil)
-            .sinkOutput(receiveValue: {
-                Log.debug($0.data)
-            })
-            .store(in: &cancellables)
+//        networkService.dataPublisher(request: request, progressHandler: nil)
+//            .sinkOutput(receiveValue: { response in
+//                Log.debug($0.data)
+//            })
+//            .store(in: &cancellables)
                 
-        guard let itemRepository = try? ItemRepository(dataModel: .main) else {
-            return
-        }
-                
+//        guard let itemRepository = try? ItemRepository(dataModel: .main) else {
+//            return
+//        }
+        
+        let itemRepository: Repository<Item> = .inMemory()
+        
         itemRepository
-            .readAll()
+            .publisher
+//            .readAll()
 //            .readFirst(where: { $0.title == "Wasser" })
 //            .write(object: Item(title: "Tur"))
-//            .write(objects: [
-//                Item(title: "Wasser")
-//            ])
+            .writeObjects(objects: [
+                Item(title: "Wasser"),
+                Item(title: "Tur"),
+                Item(title: "Kirche"),
+                Item(title: "Katzen"),
+                Item(title: "Hund")
+            ])
 //            .delete(object: Item(title: "Wasser"))
 //            .deleteAll()
             .sinkOutput(receiveValue: { item in

@@ -50,34 +50,34 @@ public extension NSManagedObjectContext {
         }
     
     func write<Persistence: PersistableManagedObject>(
-        objects: [Persistence.Model],
+        models: [Persistence.Model],
         ofType type: Persistence.Type) -> PersistenceResult<[Persistence.Model]> {
             do {
-                try objects
+                try models
                     .map {
                         return Persistence.toPersistence($0)
                     }
                     .forEach {
                         try $0.managedObjectContext?.save()
                     }
-                return .success(objects)
+                return .success(models)
             } catch {
                 return .failure(error)
             }
         }
     
     func delete<Persistence: PersistableManagedObject>(
-        object: Persistence.Model,
+        model: Persistence.Model,
         fetchRequest: NSFetchRequest<Persistence>) -> PersistenceResult<Persistence.Model> {
             do {
                 guard let managedObject = try self.fetch(fetchRequest)
-                        .first(where: { $0.isEqual(object) }) else {
+                        .first(where: { $0.isEqual(model) }) else {
                             return .failure(Error.notFound)
                         }
                 self.delete(managedObject)
                 
                 try self.save()
-                return .success(object)
+                return .success(model)
             } catch {
                 return .failure(error)
             }
