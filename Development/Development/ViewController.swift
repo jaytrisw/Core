@@ -4,10 +4,12 @@ import Combine
 import CoreUI
 import UIKit
 import NetworkService
+import RxSwift
 
 class ViewController: UIViewController {
     
     var cancellables: Set<AnyCancellable> = []
+    let disposeBag = DisposeBag()
     
     override func loadView() {
         super.loadView()
@@ -21,6 +23,15 @@ class ViewController: UIViewController {
             buttonConfiguration.image = UIImage(systemName: "platter.filled.top.iphone")
             buttonConfiguration.imagePadding = 6
             buttonConfiguration.imagePlacement = .trailing
+            
+            let initialTitle: String = "Lorem ipsum"
+            let titleSubject: CurrentValueSubject<String, Never> = .init(initialTitle)
+            let initialMessage: String = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+            let messageSubject: CurrentValueSubject<String, Never> = .init(initialMessage)
+            let initialMessageTwo: String = "Nulla ipsum purus, ullamcorper sed felis tempor, tincidunt congue arcu."
+            let messageTwoSubject: CurrentValueSubject<String, Never> = .init(initialMessageTwo)
+            let initialMessageThree: String = "Aliquam rhoncus lacus fermentum eros posuere consequat. Nam feugiat diam sit amet accumsan euismod. Proin vestibulum metus vitae enim venenatis, eget porta tellus tempus. Cras imperdiet quam varius felis euismod, sit amet vestibulum sem dignissim."
+            let messageThreeSubject: CurrentValueSubject<String, Never> = .init(initialMessageThree)
                         
             let button = UIButton(
                 primaryAction: UIAction(
@@ -39,19 +50,19 @@ class ViewController: UIViewController {
                         let model = CUIBannerView.Model(
                             items: [
                                 .item(
-                                    text: "Lorem ipsum",
+                                    text: titleSubject.value,
                                     typography: .systemTypography(withSize: 24, weight: .bold),
                                     alignment: .natural),
                                 .item(
-                                    text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+                                    text: messageSubject.value,
                                     typography: .systemTypography(withSize: 16),
                                     alignment: .natural),
                                 .item(
-                                    text: "Nulla ipsum purus, ullamcorper sed felis tempor, tincidunt congue arcu.",
+                                    text: messageTwoSubject.value,
                                     typography: .systemTypography(withSize: 12, weight: .light),
                                     alignment: .natural),
                                 .item(
-                                    text: "Aliquam rhoncus lacus fermentum eros posuere consequat. Nam feugiat diam sit amet accumsan euismod. Proin vestibulum metus vitae enim venenatis, eget porta tellus tempus. Cras imperdiet quam varius felis euismod, sit amet vestibulum sem dignissim.",
+                                    text: messageThreeSubject.value,
                                     typography: .systemTypography(withSize: 12, weight: .light),
                                     alignment: .natural)
                             ],
@@ -79,6 +90,7 @@ class ViewController: UIViewController {
                             background: background)
                         
                     }))
+                .constraining(\.heightAnchor, toConstant: 50)
                 .setting(\UIButton.configuration, buttonConfiguration)
             
             let label = CUILabel()
@@ -87,9 +99,49 @@ class ViewController: UIViewController {
                 .setting(\CUILabel.typography, .systemTypography(withSize: 40, weight: .heavy))
                 .usingAutoLayout()
             
+            let titleField = CUITextField()
+                .settingModel(.init(title: "Title", placeholder: "Title...", colors: .default, fonts: .default))
+            let messageView = CUITextView()
+                .settingModel(.init(title: "First Message", placeholder: "Message...", colors: .default, typography: .default))
+            let messageTwoView = CUITextView()
+                .settingModel(.init(title: "Second Message", placeholder: "Message...", colors: .default, typography: .default))
+            let messageThreeView = CUITextView()
+                .settingModel(.init(title: "Third Message", placeholder: "Message...", colors: .default, typography: .default))
+            
+            DispatchQueue.main.async {
+                titleField.text = initialTitle
+                messageView.text = initialMessage
+                messageTwoView.text =  initialMessageTwo
+                messageThreeView.text = initialMessageThree
+            }
+            
+            titleField
+                .textCurrentValueSubject()
+                .assign(to: \.value, on: titleSubject)
+                .store(in: &cancellables)
+            
+            messageView
+                .textCurrentValueSubject()
+                .assign(to: \.value, on: messageSubject)
+                .store(in: &cancellables)
+            
+            messageTwoView
+                .textCurrentValueSubject()
+                .assign(to: \.value, on: messageTwoSubject)
+                .store(in: &cancellables)
+            
+            messageThreeView
+                .textCurrentValueSubject()
+                .assign(to: \.value, on: messageThreeSubject)
+                .store(in: &cancellables)
+            
             UIStackView()
                 .addingArrangedSubviews([
                     label,
+                    titleField,
+                    messageView,
+                    messageTwoView,
+                    messageThreeView,
                     button
                 ])
                 .setting(\UIStackView.axis, .vertical)
@@ -138,10 +190,11 @@ class ViewController: UIViewController {
 //            return
 //        }
         
-        let itemRepository: Repository<Item> = .inMemory()
+        let itemRepository: Repository<Item> = .itemRepository
         
         itemRepository
-            .publisher
+            .rx
+//            .publisher
 //            .readAll()
 //            .readFirst(where: { $0.title == "Wasser" })
 //            .write(object: Item(title: "Tur"))
@@ -154,10 +207,10 @@ class ViewController: UIViewController {
             ])
 //            .delete(object: Item(title: "Wasser"))
 //            .deleteAll()
-            .sinkOutput(receiveValue: { item in
-                Log.debug(item)
+            .subscribe(onNext: { result in
+                Log.debug(result)
             })
-            .store(in: &cancellables)
+            .disposed(by: self.disposeBag)
         
     }
     

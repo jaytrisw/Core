@@ -25,12 +25,8 @@ public class CUITextField: UIView {
     
     @objc dynamic
     public var isEnabled: Bool {
-        set {
-            self.textField.isEnabled = newValue
-        }
-        get {
-            return self.textField.isEnabled
-        }
+        get { return self.textField.isEnabled }
+        set { self.textField.isEnabled = newValue }
     }
     private var isEnabledObservation: NSKeyValueObservation?
     
@@ -43,9 +39,8 @@ public class CUITextField: UIView {
     
     @objc dynamic
     public var text: String? {
-        didSet {
-            self.textField.text = self.text
-        }
+        get { self.textField.text }
+        set { self.textField.text = newValue }
     }
     
     // MARK: Life Cycle

@@ -26,6 +26,9 @@
 		3373E81A27FB573100313C55 /* CoreUI in Frameworks */ = {isa = PBXBuildFile; productRef = 3373E81927FB573100313C55 /* CoreUI */; };
 		3373E81C27FB573100313C55 /* Log in Frameworks */ = {isa = PBXBuildFile; productRef = 3373E81B27FB573100313C55 /* Log */; };
 		3373E81E27FB573100313C55 /* NetworkService in Frameworks */ = {isa = PBXBuildFile; productRef = 3373E81D27FB573100313C55 /* NetworkService */; };
+		3373E82127FB773300313C55 /* RxCocoa in Frameworks */ = {isa = PBXBuildFile; productRef = 3373E82027FB773300313C55 /* RxCocoa */; };
+		3373E82327FB773300313C55 /* RxRelay in Frameworks */ = {isa = PBXBuildFile; productRef = 3373E82227FB773300313C55 /* RxRelay */; };
+		3373E82527FB773300313C55 /* RxSwift in Frameworks */ = {isa = PBXBuildFile; productRef = 3373E82427FB773300313C55 /* RxSwift */; };
 		33C3C83327D5181E00DD2688 /* CDItem+PersistableManagedObject.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33C3C83227D5181E00DD2688 /* CDItem+PersistableManagedObject.swift */; };
 		33C3C83627D518A400DD2688 /* CDItem+CoreDataClass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33C3C83427D518A400DD2688 /* CDItem+CoreDataClass.swift */; };
 		33C3C83727D518A400DD2688 /* CDItem+CoreDataProperties.swift in Sources */ = {isa = PBXBuildFile; fileRef = 33C3C83527D518A400DD2688 /* CDItem+CoreDataProperties.swift */; };
@@ -81,10 +84,13 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				3373E82327FB773300313C55 /* RxRelay in Frameworks */,
 				3373E81C27FB573100313C55 /* Log in Frameworks */,
 				3373E81E27FB573100313C55 /* NetworkService in Frameworks */,
+				3373E82127FB773300313C55 /* RxCocoa in Frameworks */,
 				3373E81827FB573100313C55 /* Core in Frameworks */,
 				3373E81A27FB573100313C55 /* CoreUI in Frameworks */,
+				3373E82527FB773300313C55 /* RxSwift in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -200,6 +206,9 @@
 				3373E81927FB573100313C55 /* CoreUI */,
 				3373E81B27FB573100313C55 /* Log */,
 				3373E81D27FB573100313C55 /* NetworkService */,
+				3373E82027FB773300313C55 /* RxCocoa */,
+				3373E82227FB773300313C55 /* RxRelay */,
+				3373E82427FB773300313C55 /* RxSwift */,
 			);
 			productName = Development;
 			productReference = 33170BB927B9D9D100B0C2E4 /* Development.app */;
@@ -252,6 +261,7 @@
 			);
 			mainGroup = 33170BB027B9D9D100B0C2E4;
 			packageReferences = (
+				3373E81F27FB773300313C55 /* XCRemoteSwiftPackageReference "RxSwift" */,
 			);
 			productRefGroup = 33170BBA27B9D9D100B0C2E4 /* Products */;
 			projectDirPath = "";
@@ -594,6 +604,17 @@
 		};
 /* End XCConfigurationList section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		3373E81F27FB773300313C55 /* XCRemoteSwiftPackageReference "RxSwift" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/ReactiveX/RxSwift.git";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 6.0.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		3373E81727FB573100313C55 /* Core */ = {
 			isa = XCSwiftPackageProductDependency;
@@ -610,6 +631,21 @@
 		3373E81D27FB573100313C55 /* NetworkService */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = NetworkService;
+		};
+		3373E82027FB773300313C55 /* RxCocoa */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3373E81F27FB773300313C55 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxCocoa;
+		};
+		3373E82227FB773300313C55 /* RxRelay */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3373E81F27FB773300313C55 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxRelay;
+		};
+		3373E82427FB773300313C55 /* RxSwift */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 3373E81F27FB773300313C55 /* XCRemoteSwiftPackageReference "RxSwift" */;
+			productName = RxSwift;
 		};
 /* End XCSwiftPackageProductDependency section */
 
