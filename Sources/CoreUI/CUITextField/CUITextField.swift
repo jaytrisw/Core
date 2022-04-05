@@ -161,8 +161,8 @@ public extension CUITextField {
         self.textField.textColor = model.colors.text
         self.textField.tintColor = model.colors.text
         
-        self.textField.font = model.fonts.textField
-        self.titleLabel.font = model.fonts.titleLabel
+        self.textField.font = model.typography.textField.font
+        self.titleLabel.font = model.typography.titleLabel.font
     }
     
     func setTitleLabelText(_ text: String) {

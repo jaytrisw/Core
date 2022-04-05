@@ -100,7 +100,7 @@ class ViewController: UIViewController {
                 .usingAutoLayout()
             
             let titleField = CUITextField()
-                .settingModel(.init(title: "Title", placeholder: "Title...", colors: .default, fonts: .default))
+                .settingModel(.init(title: "Title", placeholder: "Title...", colors: .default, typography: .default))
             let messageView = CUITextView()
                 .settingModel(.init(title: "First Message", placeholder: "Message...", colors: .default, typography: .default))
             let messageTwoView = CUITextView()

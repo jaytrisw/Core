@@ -7,17 +7,17 @@ extension CUITextField {
         public var title: String?
         public var placeholder: String?
         public var colors: Colors
-        public var fonts: Fonts
+        public var typography: Typography
         
         public init(
             title: String? = nil,
             placeholder: String? = nil,
             colors: Colors = .default,
-            fonts: Fonts = .default) {
+            typography: Typography = .default) {
                 self.title = title
                 self.placeholder = placeholder
                 self.colors = colors
-                self.fonts = fonts
+                self.typography = typography
             }
         
         public static var `default`: Model {
@@ -78,22 +78,22 @@ extension CUITextField.Model {
 
 extension CUITextField.Model {
     
-    public struct Fonts {
+    public struct Typography {
         
-        public var titleLabel: UIFont
-        public var textField: UIFont
+        public var titleLabel: TypographyDesignable
+        public var textField: TypographyDesignable
         
         public init(
-            titleLabel: UIFont,
-            textField: UIFont) {
+            titleLabel: TypographyDesignable,
+            textField: TypographyDesignable) {
                 self.titleLabel = titleLabel
                 self.textField = textField
             }
         
-        public static var `default`: Fonts {
-            return Fonts(
-                titleLabel: .preferredFont(forTextStyle: .caption1),
-                textField: .preferredFont(forTextStyle: .subheadline))
+        public static var `default`: Typography {
+            return Typography(
+                titleLabel: .systemTypography(withSize: 12, weight: .regular),
+                textField: .systemTypography(withSize: 15, weight: .regular))
         }
         
     }
