@@ -40,18 +40,18 @@ public extension Repository.Publisher {
             
         }
     
-    func write(
-        object: Model) -> AnyPublisher<Model, Error> {
+    func writeModel(
+        model: Model) -> AnyPublisher<Model, Error> {
             return self.repository
-                .write(object)
+                .writeModel(model)
                 .toFuture()
                 .eraseToAnyPublisher()
         }
     
-    func writeObjects(
-        objects: [Model]) -> AnyPublisher<[Model], Error> {
+    func writeModels(
+        models: [Model]) -> AnyPublisher<[Model], Error> {
             return self.repository
-                .writeModels(objects)
+                .writeModels(models)
                 .toFuture()
                 .eraseToAnyPublisher()
         }

@@ -24,7 +24,7 @@ public extension Repository where Model.Persistence: PersistableManagedObject, M
                     }
                     return result
                 },
-                write: { model in
+                writeModel: { model in
                     dataModel
                         .managedObjectContext
                         .write(

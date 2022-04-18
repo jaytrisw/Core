@@ -15,7 +15,7 @@ public extension Repository {
                 
                 return .success(item)
             },
-            write: { model in
+            writeModel: { model in
                 mutableStorage.append(model)
                 
                 return .success(model)
