@@ -10,9 +10,30 @@ class ViewController: UIViewController {
     
     var cancellables: Set<AnyCancellable> = []
     let disposeBag = DisposeBag()
+    var items: [Item] = [] {
+        didSet {
+            Log.debug(items)
+        }
+    }
+    
+    @PersistentPreference(key: .boolKey)
+    var boolValue = true
     
     override func loadView() {
         super.loadView()
+        
+//        CUITextView()
+//            .usingAutoLayout()
+//            .settingModel(
+//                .init(
+//                    title: "First Message",
+//                    placeholder: "Message...",
+//                    colors: .default,
+//                    typography: .default))
+//            .adding(toView: self.view)
+//            .constraining(\.trailingAnchor, toView: self.view, withConstant: -20)
+//            .constraining(\.bottomAnchor, toAnchor: self.view.safeAreaLayoutGuide.bottomAnchor, withConstant: -24)
+//            .constraining(\.leadingAnchor, toView: self.view, withConstant: 20)
         
         if #available(iOS 15, *) {
             var buttonConfiguration = UIButton.Configuration.filled()
@@ -90,7 +111,7 @@ class ViewController: UIViewController {
                             background: background)
                         
                     }))
-                .constraining(\.heightAnchor, toConstant: 50)
+                .constraining(\.heightAnchor, withConstant: 50)
                 .setting(\UIButton.configuration, buttonConfiguration)
             
             let label = CUILabel()
@@ -100,14 +121,35 @@ class ViewController: UIViewController {
                 .usingAutoLayout()
             
             let titleField = CUITextField()
-                .settingModel(.init(title: "Title", placeholder: "Title...", colors: .default, typography: .default))
+                .settingModel(
+                    .init(
+                        title: "Title",
+                        placeholder: "Title...",
+                        colors: .default,
+                        typography: .default))
             let messageView = CUITextView()
-                .settingModel(.init(title: "First Message", placeholder: "Message...", colors: .default, typography: .default))
-            let messageTwoView = CUITextView()
-                .settingModel(.init(title: "Second Message", placeholder: "Message...", colors: .default, typography: .default))
-            let messageThreeView = CUITextView()
-                .settingModel(.init(title: "Third Message", placeholder: "Message...", colors: .default, typography: .default))
+                .settingModel(
+                    .init(
+                        title: "First Message",
+                        placeholder: "Message...",
+                        colors: .default,
+                        typography: .default))
             
+            let messageTwoView = CUITextView()
+                .settingModel(
+                    .init(
+                        title: "Second Message",
+                        placeholder: "Message...",
+                        colors: .default,
+                        typography: .default))
+            let messageThreeView = CUITextView()
+                .settingModel(
+                    .init(
+                        title: "Third Message",
+                        placeholder: "Message...",
+                        colors: .default,
+                        typography: .default))
+//
             DispatchQueue.main.async {
                 titleField.text = initialTitle
                 messageView.text = initialMessage
@@ -124,12 +166,12 @@ class ViewController: UIViewController {
                 .textCurrentValueSubject()
                 .assign(to: \.value, on: messageSubject)
                 .store(in: &cancellables)
-            
+
             messageTwoView
                 .textCurrentValueSubject()
                 .assign(to: \.value, on: messageTwoSubject)
                 .store(in: &cancellables)
-            
+
             messageThreeView
                 .textCurrentValueSubject()
                 .assign(to: \.value, on: messageThreeSubject)
@@ -154,7 +196,6 @@ class ViewController: UIViewController {
                         equal(\.topAnchor, \.safeAreaLayoutGuide.topAnchor),
                         equal(\.bottomAnchor, \.keyboardLayoutGuide.topAnchor, constant: -24)
                     ])
-            
         }
     }
     
@@ -185,34 +226,54 @@ class ViewController: UIViewController {
 //                Log.debug($0.data)
 //            })
 //            .store(in: &cancellables)
-                
-//        guard let itemRepository = try? ItemRepository(dataModel: .main) else {
-//            return
-//        }
         
-        let itemRepository: Repository<Item> = .itemRepository
-        
-        itemRepository
-            .rx
+//        Repository<Item>
+//            .itemRepository
 //            .publisher
 //            .readAll()
 //            .readFirst(where: { $0.title == "Wasser" })
-//            .write(object: Item(title: "Tur"))
-            .writeObjects(objects: [
-                Item(title: "Wasser"),
-                Item(title: "Tur"),
-                Item(title: "Kirche"),
-                Item(title: "Katzen"),
-                Item(title: "Hund")
-            ])
+//            .writeModel(model: Item(title: "Tur"))
+//            .writeModels(models: [
+//                Item(title: "Wasser"),
+//                Item(title: "Tur"),
+//                Item(title: "Kirche"),
+//                Item(title: "Katzen"),
+//                Item(title: "Hund")
+//            ])
 //            .delete(object: Item(title: "Wasser"))
 //            .deleteAll()
-            .subscribe(onNext: { result in
-                Log.debug(result)
-            })
-            .disposed(by: self.disposeBag)
+//            .sinkOutput(receiveValue: set(\.items, onObject: self))
+//            .store(in: &cancellables)
         
-    }
+//        Repository<Photo>
+//            .photoRepository
+//            .publisher
+//            .readAll()
+//            .readFirst(where: { $0.subject == "Wasser" })
+//            .writeModel(model: .init(subject: "Wasser"))
+//            .writeModels(models: [
+//                .init(subject: "Tur")
+//            ])
+//            .sinkOutput(receiveValue: {
+//                Log.debug($0)
+//            })
+//            .store(in: &cancellables)
+        
+        [
+            Item(title: "Wasser"),
+            Item(title: "Tur"),
+            Item(title: "Kirche"),
+            Item(title: "Katzen"),
+            Item(title: "Hund")
+        ].forEach(
+            perform: { item in
+                print(item)
+            },
+            continueCondition: { item in
+                item.title == "Kirche"
+            })
+
+        }
     
     func composeFunction() {
         
@@ -284,6 +345,31 @@ extension UIImage {
         }
         
         self.init(data: data)
+    }
+    
+}
+
+extension Data {
+    
+    var exif: [String: Any] {
+        guard let imageSource = CGImageSourceCreateWithData(self as CFData, nil) else {
+            return [:]
+        }
+        guard let dictionary = CGImageSourceCopyPropertiesAtIndex(imageSource, 0, nil) as? [String: Any] else {
+            return [:]
+        }
+        return dictionary
+    }
+    
+}
+
+import SwiftUI
+
+extension View {
+    
+    var uiView: UIView {
+        return UIHostingController(rootView: self)
+            .view
     }
     
 }

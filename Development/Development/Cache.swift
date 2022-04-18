@@ -248,7 +248,7 @@ import Core
 
 extension PreferenceKey {
     
-    public var boolKey: PreferenceKey<Bool> {
+    public static var boolKey: PreferenceKey<Bool> {
         return PreferenceKey<Bool>(key: "someKey")
     }
     

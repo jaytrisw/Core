@@ -48,17 +48,17 @@ extension Repository.Reactive {
             
         }
     
-    func write(
-        object: Model) -> Observable<Model> {
+    func writeModel(
+        model: Model) -> Observable<Model> {
             return self.repository
-                .write(object)
+                .writeModel(model)
                 .toObservable()
         }
     
-    func writeObjects(
-        objects: [Model]) -> Observable<[Model]> {
+    func writeModels(
+        models: [Model]) -> Observable<[Model]> {
             return self.repository
-                .writeModels(objects)
+                .writeModels(models)
                 .toObservable()
         }
     
@@ -94,3 +94,11 @@ extension Result {
     }
     
 }
+
+public func set<Root: AnyObject, Value>(
+    _ keyPath: ReferenceWritableKeyPath<Root, Value>,
+    onObject aClass: Root) -> ((Value) -> Void) {
+        return { [weak aClass] value in
+            aClass?[keyPath: keyPath] = value
+        }
+    }
