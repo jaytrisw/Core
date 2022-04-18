@@ -113,6 +113,13 @@ public extension UIView {
         }
     
     @discardableResult
+    func adding(
+        toView view: UIView) -> Self {
+            view.addSubview(self)
+            return self
+        }
+    
+    @discardableResult
     func constrainingToSuperview(
         _ constraints: [CUIConstraint] = equalToSuperview()) -> Self {
             guard let superview = self.superview else {
@@ -127,10 +134,62 @@ public extension UIView {
     @discardableResult
     func constraining(
         _ keyPath: KeyPath<UIView, NSLayoutDimension>,
-        toConstant constant: CGFloat) -> Self {
+        withConstant constant: CGFloat = 0,
+        usingPriority priority: UILayoutPriority = .required) -> Self {
             self[keyPath: keyPath]
                 .constraint(equalToConstant: constant)
+                .usingPriority(priority)
                 .activating()
+            return self
+        }
+    
+    @discardableResult
+    func constrainingToSuperview<Axis, Anchor: NSLayoutAnchor<Axis>>(
+        _ keyPath: KeyPath<UIView, Anchor>,
+        withConstant constant: CGFloat = 0,
+        usingPriority priority: UILayoutPriority = .required) -> Self {
+            guard let superview = self.superview else {
+                return self
+            }
+            self[keyPath: keyPath]
+                .constraint(
+                    equalTo: superview[keyPath: keyPath],
+                    constant: constant)
+                .usingPriority(priority)
+                .activating()
+            
+            return self
+        }
+    
+    @discardableResult
+    func constraining<Axis, Anchor: NSLayoutAnchor<Axis>>(
+        _ keyPath: KeyPath<UIView, Anchor>,
+        toView view: UIView,
+        withConstant constant: CGFloat = 0,
+        usingPriority priority: UILayoutPriority = .required) -> Self {
+            self[keyPath: keyPath]
+                .constraint(
+                    equalTo: view[keyPath: keyPath],
+                    constant: constant)
+                .usingPriority(priority)
+                .activating()
+            
+            return self
+        }
+    
+    @discardableResult
+    func constraining<Axis, Anchor: NSLayoutAnchor<Axis>>(
+        _ keyPath: KeyPath<UIView, Anchor>,
+        toAnchor anchor: Anchor,
+        withConstant constant: CGFloat = 0,
+        usingPriority priority: UILayoutPriority = .required) -> Self {
+            self[keyPath: keyPath]
+                .constraint(
+                    equalTo: anchor,
+                    constant: constant)
+                .usingPriority(priority)
+                .activating()
+            
             return self
         }
     
@@ -158,22 +217,29 @@ public extension UIView {
 
 public extension Array where Element == NSLayoutConstraint {
     
-    func activating() {
+    @discardableResult
+    func activating() -> [NSLayoutConstraint] {
         NSLayoutConstraint.activate(self)
+        
+        return self
     }
     
 }
 
 public extension NSLayoutConstraint {
     
-    func activating() {
+    @discardableResult
+    func activating() -> NSLayoutConstraint {
         NSLayoutConstraint.activate([self])
+        
+        return self
     }
     
 }
 
 public extension NSLayoutConstraint {
     
+    @discardableResult
     func usingPriority(
         _ priority: UILayoutPriority) -> NSLayoutConstraint {
             self.priority = priority

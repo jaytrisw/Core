@@ -39,7 +39,7 @@ public class CUITextView: UIView {
     }
     
     @objc dynamic
-    public var text: String? {
+    public var text: String = "" {
         willSet {
             self.textView.text = newValue
         }
@@ -74,30 +74,9 @@ private extension CUITextView {
     // MARK: Custom Initialization
     func commonInit() {
         
-        self.addSubview(self.titleLabel)
-        self.addSubview(self.containerView)
-        self.containerView.addSubview(self.textView)
-        self.containerView.addSubview(self.placeholderLabel)
-        
-        self.textViewHeightConstraint = self.textView.heightAnchor.constraint(equalToConstant: 50)
-        
-        NSLayoutConstraint.activate([
-            self.titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            self.titleLabel.topAnchor.constraint(equalTo: self.topAnchor),
-            self.titleLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            self.containerView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            self.containerView.topAnchor.constraint(equalTo: self.titleLabel.bottomAnchor, constant: 4),
-            self.containerView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            self.containerView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            self.textView.leadingAnchor.constraint(equalTo: self.containerView.leadingAnchor, constant: 8),
-            self.textView.topAnchor.constraint(equalTo: self.containerView.topAnchor, constant: 6),
-            self.textView.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor, constant: -8),
-            self.textView.bottomAnchor.constraint(equalTo: self.containerView.bottomAnchor, constant: -6),
-            self.placeholderLabel.leadingAnchor.constraint(equalTo: self.textView.leadingAnchor, constant: self.textView.textContainerInset.left + 4),
-            self.placeholderLabel.trailingAnchor.constraint(equalTo: self.textView.trailingAnchor, constant: -self.textView.textContainerInset.right - 4),
-            self.placeholderLabel.centerYAnchor.constraint(equalTo: self.textView.centerYAnchor),
-            self.textViewHeightConstraint
-        ])
+        self.setupTitleLabel()
+        self.setupContainerView()
+        self.setupTextView()
                 
         self.updateUI(for: self.state)
         self.textView.delegate = self
@@ -108,23 +87,96 @@ private extension CUITextView {
             \.text,
              options: [.initial, .new],
              changeHandler: { textView, change in
-                 textView.placeholderLabel.alpha = textView.text?.isEmpty == true ? 1 : 0
+                 textView.placeholderLabel.alpha = textView.text.isEmpty == true ? 1 : 0
                  textView.updateTextFieldHeight()
              })
         
     }
     
+    func setupTitleLabel() {
+        self.titleLabel
+            .adding(toView: self)
+            .constraining(
+                \.leadingAnchor,
+                 toView: self)
+            .constraining(
+                \.topAnchor,
+                 toView: self)
+            .constraining(
+                \.trailingAnchor,
+                 toView: self)
+    }
+    
+    func setupContainerView() {
+        self.containerView
+            .adding(toView: self)
+            .constraining(
+                \.leadingAnchor,
+                 toView: self)
+            .constraining(
+                \.bottomAnchor,
+                 toView: self)
+            .constraining(
+                \.trailingAnchor,
+                 toView: self)
+            .constraining(
+                \.topAnchor,
+                 toAnchor: self.titleLabel.bottomAnchor,
+                 withConstant: 4)
+    }
+    
+    func setupTextView() {
+        self.textView
+            .adding(toView: self.containerView)
+            .constraining(
+                \.leadingAnchor,
+                 toView: self.containerView,
+                 withConstant: 8)
+            .constraining(
+                \.topAnchor,
+                 toView: self.containerView,
+                 withConstant: 6)
+            .constraining(
+                \.trailingAnchor,
+                 toView: self.containerView,
+                 withConstant: -8)
+            .constraining(
+                \.bottomAnchor,
+                 toView: self.containerView,
+                 withConstant: -6)
+
+        self.textViewHeightConstraint = self.textView
+            .heightAnchor
+            .constraint(equalToConstant: 50)
+            .activating()
+
+        self.placeholderLabel
+            .adding(toView: self.containerView)
+            .constraining(
+                \.leadingAnchor,
+                 toAnchor: self.textView.leadingAnchor,
+                 withConstant: self.textView.textContainerInset.left + 4)
+            .constraining(
+                \.trailingAnchor,
+                 toAnchor: self.textView.trailingAnchor,
+                 withConstant: -self.textView.textContainerInset.right - 4)
+            .constraining(
+                \.centerYAnchor,
+                 toAnchor: self.textView.centerYAnchor)
+        
+    }
+    
     func updateTextFieldHeight() {
         let height = self.textView.sizeThatFitsContent.height
-        if height != self.textViewHeightConstraint.constant {
-            self.textViewHeightConstraint.constant = height
-        }
-        print(height)
+
         UIView.animate(
             withDuration: 0.2,
             animations: {
-                self.textView.setNeedsDisplay()
-                self.layoutIfNeeded()
+                DispatchQueue.main.async {
+                    self.textViewHeightConstraint?.constant = height
+                    self.textView.setNeedsDisplay()
+                    self.layoutIfNeeded()
+                }
         })
     }
     

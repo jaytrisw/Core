@@ -246,14 +246,14 @@ public extension CUIBannerView {
         if let leadingImage = model.leadingImage {
             self.leadingImageView
                 .setting(\.layer.cornerRadius, leadingImage.cornerRadius)
-                .constraining(\.heightAnchor, toConstant: leadingImage.height)
-                .constraining(\.widthAnchor, toConstant: leadingImage.width)
+                .constraining(\.heightAnchor, withConstant: leadingImage.height)
+                .constraining(\.widthAnchor, withConstant: leadingImage.width)
         }
         if let trailingImage = model.trailingImage {
             self.trailingImageView
                 .setting(\.layer.cornerRadius, trailingImage.cornerRadius)
-                .constraining(\.heightAnchor, toConstant: trailingImage.height)
-                .constraining(\.widthAnchor, toConstant: trailingImage.width)
+                .constraining(\.heightAnchor, withConstant: trailingImage.height)
+                .constraining(\.widthAnchor, withConstant: trailingImage.width)
         }
         
         self.model = model

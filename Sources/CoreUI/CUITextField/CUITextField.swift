@@ -69,24 +69,9 @@ private extension CUITextField {
     // MARK: Custom Initialization
     func commonInit() {
         
-        self.addSubview(self.titleLabel)
-        self.addSubview(self.containerView)
-        self.containerView.addSubview(self.textField)
-        
-        NSLayoutConstraint.activate([
-            self.titleLabel.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            self.titleLabel.topAnchor.constraint(equalTo: self.topAnchor),
-            self.titleLabel.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            self.containerView.leadingAnchor.constraint(equalTo: self.leadingAnchor),
-            self.containerView.topAnchor.constraint(equalTo: self.titleLabel.bottomAnchor, constant: 4),
-            self.containerView.trailingAnchor.constraint(equalTo: self.trailingAnchor),
-            self.containerView.bottomAnchor.constraint(equalTo: self.bottomAnchor),
-            self.containerView.heightAnchor.constraint(equalToConstant: 40),
-            self.textField.leadingAnchor.constraint(equalTo: self.containerView.leadingAnchor, constant: 8),
-            self.textField.topAnchor.constraint(equalTo: self.containerView.topAnchor, constant: 6),
-            self.textField.trailingAnchor.constraint(equalTo: self.containerView.trailingAnchor, constant: -8),
-            self.textField.bottomAnchor.constraint(equalTo: self.containerView.bottomAnchor, constant: -6),
-        ])
+        self.setupTitleLabel()
+        self.setupContainerView()
+        self.setupTextField()
         
         self.updateUI(for: self.state)
         self.textField.addTarget(self, action: #selector(editingChanged(_:)), for: .editingChanged)
@@ -100,6 +85,60 @@ private extension CUITextField {
                  textField.updateUI(for: textField.isEnabled)
         })
         
+    }
+    
+    func setupTitleLabel() {
+        self.titleLabel
+            .adding(toView: self)
+            .constraining(
+                \.leadingAnchor,
+                 toView: self)
+            .constraining(
+                \.topAnchor,
+                 toView: self)
+            .constraining(
+                \.trailingAnchor,
+                 toView: self)
+    }
+    
+    func setupContainerView() {
+        self.containerView
+            .adding(toView: self)
+            .constraining(
+                \.leadingAnchor,
+                 toView: self)
+            .constraining(
+                \.bottomAnchor,
+                 toView: self)
+            .constraining(
+                \.trailingAnchor,
+                 toView: self)
+            .constraining(
+                \.topAnchor,
+                 toAnchor: self.titleLabel.bottomAnchor,
+                 withConstant: 4)
+            .constraining(\.heightAnchor, withConstant: 40)
+    }
+    
+    func setupTextField() {
+        self.textField
+            .adding(toView: self.containerView)
+            .constraining(
+                \.leadingAnchor,
+                 toView: self.containerView,
+                 withConstant: 8)
+            .constraining(
+                \.topAnchor,
+                 toView: self.containerView,
+                 withConstant: 6)
+            .constraining(
+                \.trailingAnchor,
+                 toView: self.containerView,
+                 withConstant: -8)
+            .constraining(
+                \.bottomAnchor,
+                 toView: self.containerView,
+                 withConstant: -6)
     }
     
     // MARK: Update UI
