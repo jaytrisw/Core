@@ -94,11 +94,3 @@ extension Result {
     }
     
 }
-
-public func set<Root: AnyObject, Value>(
-    _ keyPath: ReferenceWritableKeyPath<Root, Value>,
-    onObject aClass: Root) -> ((Value) -> Void) {
-        return { [weak aClass] value in
-            aClass?[keyPath: keyPath] = value
-        }
-    }

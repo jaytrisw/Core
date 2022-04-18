@@ -39,8 +39,9 @@ public class CUITextField: UIView {
     
     @objc dynamic
     public var text: String? {
-        get { self.textField.text }
-        set { self.textField.text = newValue }
+        didSet {
+            self.textField.text = self.text
+        }
     }
     
     // MARK: Life Cycle

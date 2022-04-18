@@ -22,7 +22,10 @@ extension CUITextView {
                     \CUITextView.text,
                      options: [.initial, .new],
                      changeHandler: { [weak self] textView, change in
-                         _ = self?.subscriber?.receive(textView.text)
+                         guard let text = textView.text else {
+                             return
+                         }
+                         _ = self?.subscriber?.receive(text)
                      })
             }
         

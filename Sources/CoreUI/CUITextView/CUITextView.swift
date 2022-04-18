@@ -39,7 +39,7 @@ public class CUITextView: UIView {
     }
     
     @objc dynamic
-    public var text: String = "" {
+    public var text: String? {
         willSet {
             self.textView.text = newValue
         }
@@ -87,7 +87,10 @@ private extension CUITextView {
             \.text,
              options: [.initial, .new],
              changeHandler: { textView, change in
-                 textView.placeholderLabel.alpha = textView.text.isEmpty == true ? 1 : 0
+                 guard let text = textView.text else {
+                     return
+                 }
+                 textView.placeholderLabel.alpha = text.isEmpty ? 1 : 0
                  textView.updateTextFieldHeight()
              })
         

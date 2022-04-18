@@ -103,7 +103,8 @@ final class CUITextFieldTests: XCTestCase {
         
         let expectedResult: [String] = [
             "Hi",
-            "Bye"        ]
+            "Bye"
+        ]
         
         var cancellables: Set<AnyCancellable> = .init()
         

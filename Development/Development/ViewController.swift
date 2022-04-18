@@ -4,12 +4,10 @@ import Combine
 import CoreUI
 import UIKit
 import NetworkService
-import RxSwift
 
 class ViewController: UIViewController {
     
     var cancellables: Set<AnyCancellable> = []
-    let disposeBag = DisposeBag()
     var items: [Item] = [] {
         didSet {
             Log.debug(items)
