@@ -37,7 +37,7 @@ extension PersistentPreferencesUserDefaults: PersistablePreferences {
     
 }
 
-public extension PersistablePreferences {
+public extension PersistablePreferences where Self == PersistentPreferencesUserDefaults {
     
     static var userDefaults: PersistablePreferences {
         return PersistentPreferencesUserDefaults(.standard)
