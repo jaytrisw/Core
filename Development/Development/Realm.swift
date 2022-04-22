@@ -31,10 +31,6 @@ protocol RealmPersistableObject: PersistableObject, RealmSwift.Object {}
 
 extension RLMPhoto: RealmPersistableObject {
     
-    public static func toPersistence(_ model: Photo) -> RLMPhoto {
-        return RLMPhoto(
-            subject: model.subject)
-    }
     public func fromPersistence() -> Photo {
         Photo(
             subject: subject)
@@ -42,6 +38,11 @@ extension RLMPhoto: RealmPersistableObject {
     
     public func isEqual(_ model: Photo) -> Bool {
         return self == model
+    }
+    
+    convenience init(_ model: Photo) {
+        self.init(
+            subject: model.subject)
     }
     
 }
@@ -123,7 +124,11 @@ extension Repository where Model.Persistence: RealmPersistableObject, Model == M
                         ofType: Model.Persistence.self)
             },
             delete: { model in
-                fatalError()
+                return dataModel
+                    .realm
+                    .delete(
+                        model: model,
+                        ofType: Model.Persistence.self)
             },
             deleteAll: {
                 fatalError()
@@ -168,7 +173,7 @@ extension Realm {
         object: O.Model,
         ofType type: O.Type) -> PersistenceResult<O.Model> {
             do {
-                let realmObject = O.toPersistence(object)
+                let realmObject = O(object)
                 try self.write {
                     self.add(realmObject, update: .all)
                 }
@@ -186,6 +191,20 @@ extension Realm {
                     _ = self.write(object: $0, ofType: type)
                 }
             return .success(models)
+        }
+    
+    func delete<O: RealmPersistableObject>(
+        model: O.Model,
+        ofType type: O.Type = O.self) -> PersistenceResult<O.Model> {
+            do {
+                let realmObject = O(model)
+                try self.write{
+                    self.delete(realmObject)
+                }
+                return .success(model)
+            } catch {
+                return .failure(error)
+            }
         }
     
 }

@@ -41,7 +41,7 @@ public extension NSManagedObjectContext {
         object: Persistence.Model,
         ofType type: Persistence.Type) -> PersistenceResult<Persistence.Model> {
             do {
-                let managedObject = Persistence.toPersistence(object)
+                let managedObject = Persistence(object)
                 try managedObject.managedObjectContext?.save()
                 return .success(object)
             } catch {
@@ -55,7 +55,7 @@ public extension NSManagedObjectContext {
             do {
                 try models
                     .map {
-                        return Persistence.toPersistence($0)
+                        return Persistence($0)
                     }
                     .forEach {
                         try $0.managedObjectContext?.save()

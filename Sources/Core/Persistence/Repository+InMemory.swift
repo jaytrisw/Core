@@ -6,7 +6,7 @@ public extension Repository {
         
         var mutableStorage = storage
         
-        return .init(
+        return Repository(
             readAll: {
                 return .success(mutableStorage)
             },

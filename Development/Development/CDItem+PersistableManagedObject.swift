@@ -20,11 +20,6 @@ extension CDItem: PersistableManagedObject {
         return MainCoreDataModel.main.managedObjectContext
     }
     
-    public static func toPersistence(_ model: Item) -> CDItem {
-        return CDItem(
-            context: Self.managedObjectContext,
-            title: model.title)
-    }
     public func fromPersistence() -> Item {
         Item(
             title: title)
@@ -32,6 +27,12 @@ extension CDItem: PersistableManagedObject {
     
     public func isEqual(_ model: Item) -> Bool {
         return self == model
+    }
+    
+    public convenience init(_ model: Item) {
+        self.init(
+            context: Self.managedObjectContext,
+            title: model.title)
     }
     
 }
