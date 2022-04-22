@@ -33,15 +33,15 @@ class ViewController: UIViewController {
 //            .constraining(\.bottomAnchor, toAnchor: self.view.safeAreaLayoutGuide.bottomAnchor, withConstant: -24)
 //            .constraining(\.leadingAnchor, toView: self.view, withConstant: 20)
         
-        if #available(iOS 15, *) {
-            var buttonConfiguration = UIButton.Configuration.filled()
-            buttonConfiguration.titleAlignment = .center
-            buttonConfiguration.buttonSize = .large
-            buttonConfiguration.cornerStyle = .large
-            buttonConfiguration.title = "Present Banner"
-            buttonConfiguration.image = UIImage(systemName: "platter.filled.top.iphone")
-            buttonConfiguration.imagePadding = 6
-            buttonConfiguration.imagePlacement = .trailing
+        if #available(iOS 14, *) {
+//            var buttonConfiguration = UIButton.Configuration.filled()
+//            buttonConfiguration.titleAlignment = .center
+//            buttonConfiguration.buttonSize = .large
+//            buttonConfiguration.cornerStyle = .large
+//            buttonConfiguration.title = "Present Banner"
+//            buttonConfiguration.image = UIImage(systemName: "platter.filled.top.iphone")
+//            buttonConfiguration.imagePadding = 6
+//            buttonConfiguration.imagePlacement = .trailing
             
             let initialTitle: String = "Lorem ipsum"
             let titleSubject: CurrentValueSubject<String, Never> = .init(initialTitle)
@@ -110,7 +110,11 @@ class ViewController: UIViewController {
                         
                     }))
                 .constraining(\.heightAnchor, withConstant: 50)
-                .setting(\UIButton.configuration, buttonConfiguration)
+                .setting(\UIButton.backgroundColor, .systemBlue)
+                .settingTitle("Present Banner")
+                .settingTitleColor(.white, for: .normal)
+                .settingCornerRadius(8)
+//                .setting(\UIButton.configuration, buttonConfiguration)
             
             let label = CUILabel()
                 .setting(\CUILabel.text, "Hello")
@@ -147,7 +151,7 @@ class ViewController: UIViewController {
                         placeholder: "Message...",
                         colors: .default,
                         typography: .default))
-//
+
             DispatchQueue.main.async {
                 titleField.text = initialTitle
                 messageView.text = initialMessage

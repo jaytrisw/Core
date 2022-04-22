@@ -3,16 +3,8 @@ import UIKit
 
 public extension UIView {
     
-    var keyboardSafeLayoutGuide: UILayoutGuide {
-        self.keyboardLayoutGuide(
-            identifier: "keyboardSafeLayoutGuide",
-            constrainToSafeArea: true)
-    }
-    
     var keyboardLayoutGuide: UILayoutGuide {
-        self.keyboardLayoutGuide(
-            identifier: "keyboardLayoutGuide",
-            constrainToSafeArea: false)
+        self.keyboardLayoutGuide(identifier: .keyboardLayoutGuide)
     }
     
 }
@@ -20,14 +12,22 @@ public extension UIView {
 // MARK: - Private Methods
 private extension UIView {
     
-    func keyboardLayoutGuide(identifier: String, constrainToSafeArea: Bool) -> UILayoutGuide {
-        guard let existing = layoutGuides.first(where: { $0.identifier == identifier }) else {
+    func keyboardLayoutGuide(identifier: Key) -> UILayoutGuide {
+        guard let existing = self.layoutGuides.first(where: { $0.identifier == identifier.value }) else {
             return KeyboardLayoutGuide(
                 identifier: identifier,
-                constrainToSafeArea: constrainToSafeArea,
                 view: self)
         }
         return existing
+    }
+    
+}
+
+// MARK: - Private Keys
+private extension Key {
+    
+    static var keyboardLayoutGuide: Self {
+        return Key(stringLiteral: "keyboardLayoutGuide")
     }
     
 }

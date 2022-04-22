@@ -3,7 +3,7 @@ import UIKit
 
 extension Notification {
     
-    var keyboardHeight: CGFloat {
+    var keyboardFrameHeight: CGFloat {
         guard self.name == UIResponder.keyboardWillChangeFrameNotification else {
             return 0
         }

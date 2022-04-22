@@ -3,52 +3,23 @@ import UIKit
 
 open class KeyboardLayoutGuide: UILayoutGuide {
     
-    private var constrainToSafeArea = true {
-        didSet {
-            self.updateBottomAnchor()
-        }
-    }
-    
-    private var bottomConstraint: NSLayoutConstraint?
-    private var heightConstraint: NSLayoutConstraint? {
-        return self.owningView?
-            .constraints
-            .filter {
-                guard let layoutGuide = $0.firstItem as? UILayoutGuide else {
-                    return false
-                }
-                return layoutGuide == self
-            }
-            .first {
-                $0.firstAttribute == .height
-            }
-    }
+    private var heightConstraint: NSLayoutConstraint!
     
     // MARK: Life Cycle
     public init(
-        identifier: String,
-        constrainToSafeArea: Bool,
+        identifier: Key,
         view: UIView) {
             super.init()
             
-            NotificationCenter
-                .default
-                .addObserver(
-                    self,
-                    selector: #selector(updateLayoutGuide(_:)),
-                    name: UIResponder.keyboardWillChangeFrameNotification,
-                    object: nil)
-            NotificationCenter
-                .default
-                .addObserver(
-                    self,
-                    selector: #selector(updateLayoutGuide(_:)),
-                    name: UIResponder.keyboardWillHideNotification,
-                    object: nil)
-            
             view.addLayoutGuide(self)
-            self.setupConstraints()
+            self.identifier = identifier.value
+            self.setupConstraints(view: view)
+            self.observeKeyboardNotifications()
         }
+    
+    private override init() {
+        super.init()
+    }
     
     @available(*, unavailable)
     public required init?(coder aDecoder: NSCoder) {
@@ -64,35 +35,26 @@ open class KeyboardLayoutGuide: UILayoutGuide {
 // MARK: - Private Methods
 private extension KeyboardLayoutGuide {
     
-    func setupConstraints() {
-        self.constraining(\.heightAnchor, toConstant: 0)
-        self.constraining(\.leftAnchor, \.leftAnchor)
-        self.constraining(\.rightAnchor, \.rightAnchor)
-        self.updateBottomAnchor()
-    }
-    
-    func updateBottomAnchor() {
-        guard let view = self.owningView else {
-            self.bottomConstraint?.isActive = false
-            return
+    func setupConstraints(
+        view: UIView) {
+            self.heightConstraint = self.constraining(
+                \.heightAnchor,
+                 withConstant: 0)
+            self.constraining(
+                \.leftAnchor,
+                 toAnchor: view.leftAnchor)
+            self.constraining(
+                \.rightAnchor,
+                 toAnchor: view.rightAnchor)
+            self.constraining(
+                \.bottomAnchor,
+                 toAnchor: view.safeAreaLayoutGuide.bottomAnchor)
         }
-        
-        if self.constrainToSafeArea {
-            self.bottomConstraint = self.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
-        } else {
-            self.bottomConstraint = self.bottomAnchor.constraint(equalTo: view.bottomAnchor)
-        }
-        
-        self.bottomConstraint?.isActive = true
-    }
     
     @objc
     func updateLayoutGuide(_ notification: Notification) {
-        var height = notification.keyboardHeight
-        if self.constrainToSafeArea {
-            self.update(height: &height)
-        }
-        self.heightConstraint?.constant = height
+        let bottomSpace = self.owningView?.safeAreaInsets.bottom ?? 0
+        self.heightConstraint?.constant = notification.keyboardFrameHeight - bottomSpace
         
         UIView.animate(
             withDuration: notification.keyboardAnimationDuration,
@@ -101,42 +63,49 @@ private extension KeyboardLayoutGuide {
             })
     }
     
-    func update(height: inout CGFloat) {
-        guard height > 0 else {
-            return
-        }
-        guard let bottom = self.owningView?.safeAreaInsets.bottom else {
-            return
-        }
-        height -= bottom
+    func observeKeyboardNotifications() {
+        NotificationCenter
+            .default
+            .addObserver(
+                self,
+                selector: #selector(updateLayoutGuide(_:)),
+                name: UIResponder.keyboardWillChangeFrameNotification,
+                object: nil)
+        NotificationCenter
+            .default
+            .addObserver(
+                self,
+                selector: #selector(updateLayoutGuide(_:)),
+                name: UIResponder.keyboardWillHideNotification,
+                object: nil)
     }
     
 }
 
 private extension UILayoutGuide {
     
+    @discardableResult
     func constraining<Axis, Anchor: NSLayoutAnchor<Axis>>(
         _ keyPath: KeyPath<UILayoutGuide, Anchor>,
-        _ parentKeyPath: KeyPath<UIView, Anchor>,
-        constant: CGFloat = 0,
-        priority: UILayoutPriority = .required) {
-            guard let view = self.owningView else {
-                return
-            }
+        toAnchor anchor: Anchor,
+        withConstant constant: CGFloat = 0,
+        priority: UILayoutPriority = .required) -> NSLayoutConstraint {
             self[keyPath: keyPath]
-                .constraint(equalTo: view[keyPath: parentKeyPath], constant: constant)
+                .constraint(equalTo: anchor, constant: constant)
                 .usingPriority(priority)
                 .activating()
         }
     
+    @discardableResult
     func constraining(
         _ keyPath: KeyPath<UILayoutGuide, NSLayoutDimension>,
-        toConstant constant: CGFloat,
-        priority: UILayoutPriority = .required) {
+        withConstant constant: CGFloat = 0,
+        priority: UILayoutPriority = .required) -> NSLayoutConstraint {
             self[keyPath: keyPath]
                 .constraint(equalToConstant: constant)
                 .usingPriority(priority)
                 .activating()
+            
         }
     
 }
