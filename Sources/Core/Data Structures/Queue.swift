@@ -42,3 +42,11 @@ extension Queue: ExpressibleByArrayLiteral {
     }
     
 }
+
+extension Queue: Sequence {
+    
+    public func makeIterator() -> Array<Element>.Iterator {
+        return self.storage.makeIterator()
+    }
+    
+}

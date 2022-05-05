@@ -96,8 +96,8 @@ public extension UIView {
     
     func addSubview(
         _ child: UIView,
-        withConstraints constraints: [CUIConstraint] = equalToSuperview()) {
-            addSubview(child)
+        withConstraints constraints: [CUIConstraint]) {
+            self.addSubview(child)
             child.translatesAutoresizingMaskIntoConstraints = false
             constraints
                 .map { $0(child, self) }
@@ -186,6 +186,22 @@ public extension UIView {
             self[keyPath: keyPath]
                 .constraint(
                     equalTo: anchor,
+                    constant: constant)
+                .usingPriority(priority)
+                .activating()
+            
+            return self
+        }
+    
+    @discardableResult
+    func constraining<Axis, Anchor: NSLayoutAnchor<Axis>>(
+        _ keyPath: KeyPath<UIView, Anchor>,
+        greaterThanOrEqualToAnchor anchor: Anchor,
+        withConstant constant: CGFloat = 0,
+        usingPriority priority: UILayoutPriority = .required) -> Self {
+            self[keyPath: keyPath]
+                .constraint(
+                    greaterThanOrEqualTo: anchor,
                     constant: constant)
                 .usingPriority(priority)
                 .activating()

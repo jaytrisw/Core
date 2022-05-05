@@ -33,7 +33,7 @@ class ViewController: UIViewController {
 //            .constraining(\.bottomAnchor, toAnchor: self.view.safeAreaLayoutGuide.bottomAnchor, withConstant: -24)
 //            .constraining(\.leadingAnchor, toView: self.view, withConstant: 20)
         
-        if #available(iOS 14, *) {
+        if #available(iOS 15, *) {
 //            var buttonConfiguration = UIButton.Configuration.filled()
 //            buttonConfiguration.titleAlignment = .center
 //            buttonConfiguration.buttonSize = .large
@@ -198,6 +198,9 @@ class ViewController: UIViewController {
                         equal(\.topAnchor, \.safeAreaLayoutGuide.topAnchor),
                         equal(\.bottomAnchor, \.keyboardLayoutGuide.topAnchor, constant: -24)
                     ])
+            
+            Log.debug(self.view.keyboardLayoutGuide.identifier)
+            
         }
     }
     
@@ -260,7 +263,7 @@ class ViewController: UIViewController {
 //                Log.debug($0)
 //            })
 //            .store(in: &cancellables)
-        
+                
         [
             Item(title: "Wasser"),
             Item(title: "Tur"),
@@ -274,6 +277,21 @@ class ViewController: UIViewController {
             continueCondition: { item in
                 item.title == "Kirche"
             })
+        
+        self.presentingCard { parentView, layoutGuide in
+            let text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc et auctor nisi. Proin ut mauris ex. Ut tincidunt urna sit amet ornare venenatis. Duis vitae malesuada lorem. Pellentesque auctor justo sed euismod bibendum. Fusce sit amet ante ac quam volutpat vestibulum. Quisque pretium ipsum id augue sodales pretium. Mauris sapien lacus, congue nec nulla sagittis, eleifend posuere mi. Proin cursus orci non leo commodo venenatis. Suspendisse varius mauris ac quam dapibus porta. In quis libero eu ex tincidunt blandit. Nullam eu magna neque. Donec auctor risus augue, sed finibus ipsum pellentesque sit amet."
+            
+            return UILabel()
+                .setting(\UILabel.text, text)
+                .setting(\UILabel.textAlignment, .center)
+                .setting(\UILabel.numberOfLines, 0)
+                .usingAutoLayout()
+                .adding(toView: parentView)
+                .constraining(\.topAnchor, toAnchor: layoutGuide.topAnchor)
+                .constraining(\.trailingAnchor, toAnchor: layoutGuide.trailingAnchor)
+                .constraining(\.bottomAnchor, toAnchor: layoutGuide.bottomAnchor)
+                .constraining(\.leadingAnchor, toAnchor: layoutGuide.leadingAnchor)
+        }
 
         }
     
