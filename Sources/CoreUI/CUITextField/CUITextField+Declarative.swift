@@ -50,4 +50,11 @@ extension CUITextField {
         return self
     }
     
+    @discardableResult
+    func settingSecureTextEntry(_ isSecureTextEntry: Bool) -> Self {
+        self.setSecureTextEntry(isSecureTextEntry)
+        return self
+        
+    }
+    
 }

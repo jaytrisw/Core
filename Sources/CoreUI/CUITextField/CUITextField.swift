@@ -233,6 +233,10 @@ public extension CUITextField {
         self.textField.autocapitalizationType = autocapitalizationType
     }
     
+    func setSecureTextEntry(_ isSecureTextEntry: Bool) {
+        self.textField.isSecureTextEntry = isSecureTextEntry
+    }
+    
     func addTarget(_ target: Any?, action: Selector, for controlEvents: UIControl.Event) {
         self.textField.addTarget(target, action: action, for: controlEvents)
     }
