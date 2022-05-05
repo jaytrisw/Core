@@ -8,21 +8,27 @@ extension CUICardView {
         public let colorStyle: CUICardView.ColorStyle
         public let animation: AnimationConfiguration
         public let shadow: ShadowDesignable
+        public let onDismiss: DismissHandler?
         
         public init(
             colorStyle: CUICardView.ColorStyle,
             animation: AnimationConfiguration,
-            shadow: ShadowDesignable = .floating) {
+            shadow: ShadowDesignable = .floating,
+            onDismiss: DismissHandler?) {
                 self.colorStyle = colorStyle
                 self.animation = animation
                 self.shadow = shadow
+                self.onDismiss = onDismiss
             }
+        
+        public typealias DismissHandler = () -> Void
         
         public static var `default`: CUICardView.Configuration {
             return CUICardView.Configuration(
                 colorStyle: .default,
                 animation: .default,
-                shadow: .floating)
+                shadow: .floating,
+                onDismiss: nil)
         }
         
     }

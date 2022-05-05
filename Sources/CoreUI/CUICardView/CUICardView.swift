@@ -54,7 +54,7 @@ public extension CUICardView {
         return self
     }
     
-    func present(completion: (() -> Void)? = nil) {
+    func present() {
         self.alpha = 0
         self.contentView.alpha = 0
         self.contentView.layoutIfNeeded()
@@ -72,12 +72,10 @@ public extension CUICardView {
                 self.contentView.alpha = 1
                 self.contentView.transform = .identity
             },
-            completion: { _ in
-                completion?()
-            })
+            completion: nil)
     }
     
-    func dismiss(completion: (() -> Void)? = nil) {
+    func dismiss() {
         UIView.animate(
             withDuration: self.configuration.animation.duration,
             delay: self.configuration.animation.delay,
@@ -91,7 +89,7 @@ public extension CUICardView {
             },
             completion: { _ in
                 self.removeFromSuperview()
-                completion?()
+                self.configuration.onDismiss?()
             })
     }
     
