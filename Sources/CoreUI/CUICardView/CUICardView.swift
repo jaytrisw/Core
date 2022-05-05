@@ -2,11 +2,11 @@ import UIKit
 
 public class CUICardView: UIView {
     
-    var configuration: CUICardView.Configuration = .default
-    var contentView: ContentView!
-    var contentViewInsets: UIEdgeInsets = .proportional(24)
+    public var configuration: CUICardView.Configuration = .default
+    public var contentView: ContentView!
+    public var contentViewInsets: UIEdgeInsets = .proportional(24)
     
-    var cornerRadius: CGFloat {
+    public var cornerRadius: CGFloat {
         get {
             self.contentView.layer.cornerRadius
         }
@@ -47,7 +47,7 @@ public class CUICardView: UIView {
 // MARK: - Public Methods
 public extension CUICardView {
     
-    func adding(withContent contentBuilder: (UIView, UILayoutGuide) -> UIView) -> Self {
+    func adding(withContent contentBuilder: (CUICardView.ContentView, UILayoutGuide) -> UIView) -> Self {
         let contentView = contentBuilder(self.contentView, self.contentView.contentLayoutGuide)
         self.contentView.addSubview(contentView)
         

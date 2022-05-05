@@ -4,10 +4,10 @@ extension CUICardView {
     
     final public class ContentView: UIView {
         
-        lazy var contentLayoutGuide: ContentViewLayoutGuide = {
+        public lazy var contentLayoutGuide: ContentViewLayoutGuide = {
             return ContentViewLayoutGuide(self)
         }()
-        var contentInsets: UIEdgeInsets! {
+        public var contentInsets: UIEdgeInsets! {
             didSet {
                 self.contentLayoutGuide.updateConstraints(self)
             }
@@ -25,10 +25,14 @@ extension CUICardView {
             self.commonInit()
         }
         
-        func commonInit() {
-            self.contentInsets = UIEdgeInsets.proportional(24)
-        }
-        
+    }
+    
+}
+
+private extension CUICardView.ContentView {
+    
+    func commonInit() {
+        self.contentInsets = UIEdgeInsets.proportional(24)
     }
     
 }

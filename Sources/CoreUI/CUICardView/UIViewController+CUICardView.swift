@@ -4,7 +4,7 @@ public extension UIViewController {
     
     func presentingCard(
         configuration: CUICardView.Configuration = .default,
-        withContent contentBuilder: (UIView, UILayoutGuide) -> UIView) {
+        withContent contentBuilder: (CUICardView.ContentView, UILayoutGuide) -> UIView) {
             CUICardView(configuration: configuration)
                 .usingAutoLayout()
                 .adding(toView: self.view)
