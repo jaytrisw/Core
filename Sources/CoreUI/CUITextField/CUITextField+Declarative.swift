@@ -44,4 +44,10 @@ extension CUITextField {
         return self
     }
     
+    @discardableResult
+    public func settingAutocapitalizationType(_ autocapitalizationType: UITextAutocapitalizationType) -> Self {
+        self.setAutocapitalizationType(autocapitalizationType)
+        return self
+    }
+    
 }

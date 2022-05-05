@@ -229,6 +229,10 @@ public extension CUITextField {
         self.textField.keyboardType = keyboardType
     }
     
+    func setAutocapitalizationType(_ autocapitalizationType: UITextAutocapitalizationType) {
+        self.textField.autocapitalizationType = autocapitalizationType
+    }
+    
     func addTarget(_ target: Any?, action: Selector, for controlEvents: UIControl.Event) {
         self.textField.addTarget(target, action: action, for: controlEvents)
     }
