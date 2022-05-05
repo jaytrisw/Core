@@ -88,8 +88,8 @@ public extension CUICardView {
                 self.contentView.transform = CGAffineTransform(translationX: 0, y: self.contentView.frame.height)
             },
             completion: { _ in
-                self.removeFromSuperview()
                 self.configuration.onDismiss?()
+                self.removeFromSuperview()
             })
     }
     
