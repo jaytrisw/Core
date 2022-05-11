@@ -20,11 +20,11 @@ extension XCTestCase {
             return try unwrappedResult.get()
         }
     
-    public func awaitPublisher<T: Publisher>(
-        _ publisher: T,
+    public func awaitPublisher<Output, Failure, P: Publisher>(
+        _ publisher: P,
         timeout: TimeInterval = 0.3,
         file: StaticString = #file,
-        line: UInt = #line) throws -> (output: T.Output?, failure: T.Failure?) where T.Failure == Error {
+        line: UInt = #line) throws -> (output: P.Output?, failure: P.Failure?) where P.Output == Output, P.Failure == Failure {
             
             let unwrappedResult = try self.awaitPublisherResult(
                 publisher,
@@ -36,7 +36,7 @@ extension XCTestCase {
                 case .success(let output):
                     return (output: output, failure: nil)
                 case .failure(let error):
-                    return (output: nil, failure: error)
+                    return (nil, error as? P.Failure)
             }
             
         }
