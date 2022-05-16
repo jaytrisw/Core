@@ -112,3 +112,11 @@ extension CUIPulsingDots: CUIActivityAnimatableView {
     }
     
 }
+
+public extension CUIActivityAnimatableView where Self == CUIPulsingDots {
+    
+    static var pulsingDots: Self {
+        return CUIPulsingDots()
+    }
+    
+}

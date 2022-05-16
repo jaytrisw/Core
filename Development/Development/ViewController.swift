@@ -180,7 +180,7 @@ class ViewController: UIViewController {
                 .assign(to: \.value, on: messageThreeSubject)
                 .store(in: &cancellables)
             
-            let cuiButton = CUIButton(CUIPulsingDots())
+            let cuiButton = CUIButton(.pulsingDots)
                 .constraining(\.heightAnchor, withConstant: 50)
                 .setting(\UIButton.backgroundColor, .systemBlue)
                 .settingTitle("Show Loading")
