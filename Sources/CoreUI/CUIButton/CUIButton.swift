@@ -21,6 +21,14 @@ public class CUIButton: UIButton {
                 .usingAutoLayout()
                 .constraining(\.centerXAnchor, toAnchor: self.centerXAnchor)
                 .constraining(\.centerYAnchor, toAnchor: self.centerYAnchor)
+            
+            self.setTitleColor(.white, for: .normal)
+            self.setTitleColor(.clear, for: .disabled)
+            self.layer.cornerRadius = 12
+            self.clipsToBounds = true
+            self.titleLabel?.font = UIFont.preferredFont(forTextStyle: .body)
+            self.contentEdgeInsets = UIEdgeInsets(top: 12, left: 40, bottom: 12, right: 40)
+            self.backgroundColor = .systemBlue
         }
     
     @available(*, unavailable)
