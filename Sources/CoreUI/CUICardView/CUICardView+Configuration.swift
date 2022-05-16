@@ -3,18 +3,36 @@ import UIKit
 
 extension CUICardView {
     
+    public enum VerticalPosition {
+        case top
+        case center
+        case bottom
+    }
+    
     public struct Configuration {
         
+        public let cornerRadius: CGFloat
+        public let contentViewInsets: UIEdgeInsets
+        public let verticalPosition: VerticalPosition
+        public let tapToDismiss: Bool
         public let colorStyle: CUICardView.ColorStyle
         public let animation: AnimationConfiguration
         public let shadow: ShadowDesignable
         public let onDismiss: DismissHandler?
         
         public init(
+            cornerRadius: CGFloat,
+            contentViewInsets: UIEdgeInsets,
+            verticalPosition: VerticalPosition,
+            tapToDismiss: Bool,
             colorStyle: CUICardView.ColorStyle,
             animation: AnimationConfiguration,
             shadow: ShadowDesignable = .floating,
             onDismiss: DismissHandler?) {
+                self.cornerRadius = cornerRadius
+                self.contentViewInsets = contentViewInsets
+                self.verticalPosition = verticalPosition
+                self.tapToDismiss = tapToDismiss
                 self.colorStyle = colorStyle
                 self.animation = animation
                 self.shadow = shadow
@@ -25,6 +43,10 @@ extension CUICardView {
         
         public static var `default`: CUICardView.Configuration {
             return CUICardView.Configuration(
+                cornerRadius: 20,
+                contentViewInsets: .proportional(24),
+                verticalPosition: .bottom,
+                tapToDismiss: true,
                 colorStyle: .default,
                 animation: .default,
                 shadow: .floating,

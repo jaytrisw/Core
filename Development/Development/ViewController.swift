@@ -7,6 +7,7 @@ import NetworkService
 
 class ViewController: UIViewController {
     
+    var activityIndicator: CUIActivityIndicatorView!
     var cancellables: Set<AnyCancellable> = []
     var items: [Item] = [] {
         didSet {
@@ -20,28 +21,28 @@ class ViewController: UIViewController {
     override func loadView() {
         super.loadView()
         
-//        CUITextView()
-//            .usingAutoLayout()
-//            .settingModel(
-//                .init(
-//                    title: "First Message",
-//                    placeholder: "Message...",
-//                    colors: .default,
-//                    typography: .default))
-//            .adding(toView: self.view)
-//            .constraining(\.trailingAnchor, toView: self.view, withConstant: -20)
-//            .constraining(\.bottomAnchor, toAnchor: self.view.safeAreaLayoutGuide.bottomAnchor, withConstant: -24)
-//            .constraining(\.leadingAnchor, toView: self.view, withConstant: 20)
+        //        CUITextView()
+        //            .usingAutoLayout()
+        //            .settingModel(
+        //                .init(
+        //                    title: "First Message",
+        //                    placeholder: "Message...",
+        //                    colors: .default,
+        //                    typography: .default))
+        //            .adding(toView: self.view)
+        //            .constraining(\.trailingAnchor, toView: self.view, withConstant: -20)
+        //            .constraining(\.bottomAnchor, toAnchor: self.view.safeAreaLayoutGuide.bottomAnchor, withConstant: -24)
+        //            .constraining(\.leadingAnchor, toView: self.view, withConstant: 20)
         
         if #available(iOS 15, *) {
-//            var buttonConfiguration = UIButton.Configuration.filled()
-//            buttonConfiguration.titleAlignment = .center
-//            buttonConfiguration.buttonSize = .large
-//            buttonConfiguration.cornerStyle = .large
-//            buttonConfiguration.title = "Present Banner"
-//            buttonConfiguration.image = UIImage(systemName: "platter.filled.top.iphone")
-//            buttonConfiguration.imagePadding = 6
-//            buttonConfiguration.imagePlacement = .trailing
+            //            var buttonConfiguration = UIButton.Configuration.filled()
+            //            buttonConfiguration.titleAlignment = .center
+            //            buttonConfiguration.buttonSize = .large
+            //            buttonConfiguration.cornerStyle = .large
+            //            buttonConfiguration.title = "Present Banner"
+            //            buttonConfiguration.image = UIImage(systemName: "platter.filled.top.iphone")
+            //            buttonConfiguration.imagePadding = 6
+            //            buttonConfiguration.imagePlacement = .trailing
             
             let initialTitle: String = "Lorem ipsum"
             let titleSubject: CurrentValueSubject<String, Never> = .init(initialTitle)
@@ -51,7 +52,7 @@ class ViewController: UIViewController {
             let messageTwoSubject: CurrentValueSubject<String, Never> = .init(initialMessageTwo)
             let initialMessageThree: String = "Aliquam rhoncus lacus fermentum eros posuere consequat. Nam feugiat diam sit amet accumsan euismod. Proin vestibulum metus vitae enim venenatis, eget porta tellus tempus. Cras imperdiet quam varius felis euismod, sit amet vestibulum sem dignissim."
             let messageThreeSubject: CurrentValueSubject<String, Never> = .init(initialMessageThree)
-                        
+            
             let button = UIButton(
                 primaryAction: UIAction(
                     handler: { [weak self] action in
@@ -65,7 +66,7 @@ class ViewController: UIViewController {
                             colorStyle: colorStyle,
                             position: Bool.random() ? .top : .bottom,
                             animation: .default)
-                                                
+                        
                         let model = CUIBannerView.Model(
                             items: [
                                 .item(
@@ -114,7 +115,7 @@ class ViewController: UIViewController {
                 .settingTitle("Present Banner")
                 .settingTitleColor(.white, for: .normal)
                 .settingCornerRadius(8)
-//                .setting(\UIButton.configuration, buttonConfiguration)
+            //                .setting(\UIButton.configuration, buttonConfiguration)
             
             let label = CUILabel()
                 .setting(\CUILabel.text, "Hello")
@@ -151,7 +152,7 @@ class ViewController: UIViewController {
                         placeholder: "Message...",
                         colors: .default,
                         typography: .default))
-
+            
             DispatchQueue.main.async {
                 titleField.text = initialTitle
                 messageView.text = initialMessage
@@ -168,16 +169,23 @@ class ViewController: UIViewController {
                 .textCurrentValueSubject()
                 .assign(to: \.value, on: messageSubject)
                 .store(in: &cancellables)
-
+            
             messageTwoView
                 .textCurrentValueSubject()
                 .assign(to: \.value, on: messageTwoSubject)
                 .store(in: &cancellables)
-
+            
             messageThreeView
                 .textCurrentValueSubject()
                 .assign(to: \.value, on: messageThreeSubject)
                 .store(in: &cancellables)
+            
+            let cuiButton = CUIButton(CUIPulsingDots())
+                .constraining(\.heightAnchor, withConstant: 50)
+                .setting(\UIButton.backgroundColor, .systemBlue)
+                .settingTitle("Show Loading")
+                .settingTitleColor(.white, for: .normal)
+                .settingCornerRadius(8)
             
             UIStackView()
                 .addingArrangedSubviews([
@@ -186,7 +194,48 @@ class ViewController: UIViewController {
                     messageView,
                     messageTwoView,
                     messageThreeView,
-                    button
+                    button,
+//                    UIButton(
+//                        primaryAction: UIAction(
+//                            handler: { [weak self] action in
+//                                self?.view.endEditing(true)
+//                                self?.showLoading()
+//                            }))
+                    cuiButton
+                        .addingHandler(forEvent: .touchUpInside, action: { [weak self] in
+                            self?.view.endEditing(true)
+                            DispatchQueue.main.async {
+                                cuiButton.isLoading = true
+                            }
+                            
+                            DispatchQueue.main.asyncAfter(
+                                deadline: .now() + 5,
+                                execute: {
+                                    cuiButton.isLoading = false
+                                })
+                        }),
+                    UIButton(
+                        primaryAction: UIAction(
+                            handler: { [weak self] action in
+                                self?.view.endEditing(true)
+                                self?.presentCard()
+                            }))
+                    .constraining(\.heightAnchor, withConstant: 50)
+                    .setting(\UIButton.backgroundColor, .systemBlue)
+                    .settingTitle("Present Card")
+                    .settingTitleColor(.white, for: .normal)
+                    .settingCornerRadius(8),
+                    UIButton(
+                        primaryAction: UIAction(
+                            handler: { [weak self] action in
+                                self?.view.endEditing(true)
+                                self?.presentAlert()
+                            }))
+                    .constraining(\.heightAnchor, withConstant: 50)
+                    .setting(\UIButton.backgroundColor, .systemBlue)
+                    .settingTitle("Present Alert")
+                    .settingTitleColor(.white, for: .normal)
+                    .settingCornerRadius(8)
                 ])
                 .setting(\UIStackView.axis, .vertical)
                 .setting(\UIStackView.spacing, 16)
@@ -206,63 +255,63 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-         
+        
         // openssl s_client -servername www.guamdiveguide.com -connect www.guamdiveguide.com:443 | openssl x509 -pubkey -noout | openssl rsa -pubin -outform der | openssl dgst -sha256 -binary | openssl enc -base64
-//        let networkService = URLSessionService(
-//            protectedHosts: [
-//                "guamdiveguide.com": "NpzUJIiwktzVeUW/NTPu3B6jSmG2mNhae0DgWWfSSfQ="
-//            ],
-//            configuration: .ephemeral,
-//            logger: Log)
+        //        let networkService = URLSessionService(
+        //            protectedHosts: [
+        //                "guamdiveguide.com": "NpzUJIiwktzVeUW/NTPu3B6jSmG2mNhae0DgWWfSSfQ="
+        //            ],
+        //            configuration: .ephemeral,
+        //            logger: Log)
         
-//        // https://jsonplaceholder.typicode.com/posts/1
-//        let endpoint = Endpoint(
-//            scheme: .https,
-//            host: "www.guamdiveguide.com",
-//            path: "index.php")
-//
-//        let request = Request(
-//            method: .post,
-//            endpoint: endpoint,
-//            kind: .request(parameters: [:]))
+        //        // https://jsonplaceholder.typicode.com/posts/1
+        //        let endpoint = Endpoint(
+        //            scheme: .https,
+        //            host: "www.guamdiveguide.com",
+        //            path: "index.php")
+        //
+        //        let request = Request(
+        //            method: .post,
+        //            endpoint: endpoint,
+        //            kind: .request(parameters: [:]))
         
-//        networkService.dataPublisher(request: request, progressHandler: nil)
-//            .sinkOutput(receiveValue: { response in
-//                Log.debug($0.data)
-//            })
-//            .store(in: &cancellables)
+        //        networkService.dataPublisher(request: request, progressHandler: nil)
+        //            .sinkOutput(receiveValue: { response in
+        //                Log.debug($0.data)
+        //            })
+        //            .store(in: &cancellables)
         
-//        Repository<Item>
-//            .itemRepository
-//            .publisher
-//            .readAll()
-//            .readFirst(where: { $0.title == "Wasser" })
-//            .writeModel(model: Item(title: "Tur"))
-//            .writeModels(models: [
-//                Item(title: "Wasser"),
-//                Item(title: "Tur"),
-//                Item(title: "Kirche"),
-//                Item(title: "Katzen"),
-//                Item(title: "Hund")
-//            ])
-//            .delete(object: Item(title: "Wasser"))
-//            .deleteAll()
-//            .sinkOutput(receiveValue: set(\.items, onObject: self))
-//            .store(in: &cancellables)
+        //        Repository<Item>
+        //            .itemRepository
+        //            .publisher
+        //            .readAll()
+        //            .readFirst(where: { $0.title == "Wasser" })
+        //            .writeModel(model: Item(title: "Tur"))
+        //            .writeModels(models: [
+        //                Item(title: "Wasser"),
+        //                Item(title: "Tur"),
+        //                Item(title: "Kirche"),
+        //                Item(title: "Katzen"),
+        //                Item(title: "Hund")
+        //            ])
+        //            .delete(object: Item(title: "Wasser"))
+        //            .deleteAll()
+        //            .sinkOutput(receiveValue: set(\.items, onObject: self))
+        //            .store(in: &cancellables)
         
-//        Repository<Photo>
-//            .photoRepository
-//            .publisher
-//            .readAll()
-//            .readFirst(where: { $0.subject == "Wasser" })
-//            .writeModel(model: .init(subject: "Wasser"))
-//            .writeModels(models: [
-//                .init(subject: "Tur")
-//            ])
-//            .sinkOutput(receiveValue: {
-//                Log.debug($0)
-//            })
-//            .store(in: &cancellables)
+        //        Repository<Photo>
+        //            .photoRepository
+        //            .publisher
+        //            .readAll()
+        //            .readFirst(where: { $0.subject == "Wasser" })
+        //            .writeModel(model: .init(subject: "Wasser"))
+        //            .writeModels(models: [
+        //                .init(subject: "Tur")
+        //            ])
+        //            .sinkOutput(receiveValue: {
+        //                Log.debug($0)
+        //            })
+        //            .store(in: &cancellables)
                 
         [
             Item(title: "Wasser"),
@@ -278,22 +327,41 @@ class ViewController: UIViewController {
                 item.title == "Kirche"
             })
         
-        self.presentingCard { parentView, layoutGuide in
-            let text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc et auctor nisi. Proin ut mauris ex. Ut tincidunt urna sit amet ornare venenatis. Duis vitae malesuada lorem. Pellentesque auctor justo sed euismod bibendum. Fusce sit amet ante ac quam volutpat vestibulum. Quisque pretium ipsum id augue sodales pretium. Mauris sapien lacus, congue nec nulla sagittis, eleifend posuere mi. Proin cursus orci non leo commodo venenatis. Suspendisse varius mauris ac quam dapibus porta. In quis libero eu ex tincidunt blandit. Nullam eu magna neque. Donec auctor risus augue, sed finibus ipsum pellentesque sit amet."
-            
-            return UILabel()
-                .setting(\UILabel.text, text)
-                .setting(\UILabel.textAlignment, .center)
-                .setting(\UILabel.numberOfLines, 0)
-                .usingAutoLayout()
-                .adding(toView: parentView)
-                .constraining(\.topAnchor, toAnchor: layoutGuide.topAnchor)
-                .constraining(\.trailingAnchor, toAnchor: layoutGuide.trailingAnchor)
-                .constraining(\.bottomAnchor, toAnchor: layoutGuide.bottomAnchor)
-                .constraining(\.leadingAnchor, toAnchor: layoutGuide.leadingAnchor)
-        }
+    }
+    
+    func showLoading() {
+        
+        let dimmedView = UIView()
+            .setting(\.backgroundColor, .systemBackground.withAlphaComponent(0.8))
+            .adding(toView: self.view)
+            .usingAutoLayout()
+            .constraining(\.topAnchor, toAnchor: self.view.topAnchor)
+            .constraining(\.trailingAnchor, toAnchor: self.view.trailingAnchor)
+            .constraining(\.bottomAnchor, toAnchor: self.view.bottomAnchor)
+            .constraining(\.leadingAnchor, toAnchor: self.view.leadingAnchor)
+        
+        let activityView = CUIPulsingDots()
+        self.activityIndicator = CUIActivityIndicatorView(activityView)
+            .adding(toView: dimmedView)
+            .usingAutoLayout()
+            .setting(\CUIActivityIndicatorView.color, .systemPink)
+            .constraining(\.centerXAnchor, toAnchor: dimmedView.centerXAnchor)
+            .constraining(\.centerYAnchor, toAnchor: dimmedView.centerYAnchor)
+        
+        self.activityIndicator
+            .startAnimating()
+        
+        DispatchQueue.main.asyncAfter(
+            deadline: .now() + 5,
+            execute: {
+                Animator.fadeOut(completion: { _ in
+                    dimmedView.removeFromSuperview()
+                })
+                .animate(dimmedView)
+                self.activityIndicator.stopAnimating()
+            })
 
-        }
+    }
     
     func composeFunction() {
         
@@ -340,6 +408,64 @@ class ViewController: UIViewController {
         
         print(some("Jello"))
         
+    }
+    
+    func presentCard() {
+        self.presentingCard { parentView, layoutGuide in
+            let text = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc et auctor nisi. Proin ut mauris ex. Ut tincidunt urna sit amet ornare venenatis. Duis vitae malesuada lorem. Pellentesque auctor justo sed euismod bibendum. Fusce sit amet ante ac quam volutpat vestibulum. Quisque pretium ipsum id augue sodales pretium. Mauris sapien lacus, congue nec nulla sagittis, eleifend posuere mi. Proin cursus orci non leo commodo venenatis. Suspendisse varius mauris ac quam dapibus porta. In quis libero eu ex tincidunt blandit. Nullam eu magna neque. Donec auctor risus augue, sed finibus ipsum pellentesque sit amet."
+            
+            return UILabel()
+                .setting(\UILabel.text, text)
+                .setting(\UILabel.textAlignment, .center)
+                .setting(\UILabel.numberOfLines, 0)
+                .usingAutoLayout()
+                .adding(toView: parentView)
+                .constraining(\.topAnchor, toAnchor: layoutGuide.topAnchor)
+                .constraining(\.trailingAnchor, toAnchor: layoutGuide.trailingAnchor)
+                .constraining(\.bottomAnchor, toAnchor: layoutGuide.bottomAnchor)
+                .constraining(\.leadingAnchor, toAnchor: layoutGuide.leadingAnchor)
+        }
+    }
+    
+    func presentAlert() {
+        let vibrateConfiguration = CUIAlertView.ActionConfiguration(
+            title: "Vibrate",
+            titleColor: .label,
+            titleFont: .systemFont(ofSize: 17, weight: .medium),
+            backgroundColor: .secondarySystemBackground,
+            cornerRadius: 12,
+            handler: { _ in
+                UIImpactFeedbackGenerator(style: .heavy)
+                    .impactOccurred()
+            })
+        let dismissConfiguration = CUIAlertView.ActionConfiguration(
+            title: "Dismiss",
+            titleColor: .white,
+            titleFont: .systemFont(ofSize: 17, weight: .semibold),
+            backgroundColor: .systemPink,
+            cornerRadius: 12,
+            handler: { parentView in
+                parentView.dismiss()
+            })
+        
+        let title = CUIAlertView.Model(
+            text: "Alert Title",
+            textAlignment: .center,
+            numberOfLines: 0,
+            textColor: .label,
+            font: .systemFont(ofSize: 22, weight: .bold))
+        
+        let message = CUIAlertView.Model(
+            text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc et auctor nisi. Proin ut mauris ex. Ut tincidunt urna sit amet ornare venenatis. Duis vitae malesuada lorem.",
+            textAlignment: .center,
+            numberOfLines: 0,
+            textColor: .label,
+            font: .systemFont(ofSize: 17, weight: .medium))
+        
+        self.presentingAlert(
+            title: title,
+            message: message,
+            actionConfigurations: vibrateConfiguration, dismissConfiguration)
     }
     
 }

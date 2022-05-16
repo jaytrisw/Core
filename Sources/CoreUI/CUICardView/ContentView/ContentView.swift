@@ -1,5 +1,9 @@
 import UIKit
 
+public typealias Closure<Input, Output> = (Input) -> Output
+public typealias ClosureWithoutInput<Output> = () -> Output
+public typealias DismissCompletion = ClosureWithoutInput<Void>
+
 extension CUICardView {
     
     final public class ContentView: UIView {
@@ -13,16 +17,20 @@ extension CUICardView {
             }
         }
         
-        override init(frame: CGRect) {
-            super.init(frame: frame)
-            
-            self.commonInit()
-        }
+        private var dismissHandler: ClosureWithoutInput<Void>
         
+        init(
+            frame: CGRect = .zero,
+            dismissHandler: @escaping ClosureWithoutInput<Void>) {
+                self.dismissHandler = dismissHandler
+                super.init(frame: frame)
+                
+                self.commonInit()
+            }
+        
+        @available(*, unavailable)
         required init?(coder: NSCoder) {
-            super.init(coder: coder)
-            
-            self.commonInit()
+            fatalError("init(coder:) has not been implemented")
         }
         
     }
@@ -36,3 +44,12 @@ private extension CUICardView.ContentView {
     }
     
 }
+
+public extension CUICardView.ContentView {
+    
+    func dismiss() {
+        self.dismissHandler()
+    }
+    
+}
+

@@ -6,7 +6,7 @@ public class CUICardView: UIView {
     public var contentView: ContentView!
     public var contentViewInsets: UIEdgeInsets = .proportional(24)
     
-    public var cornerRadius: CGFloat {
+    private var cornerRadius: CGFloat {
         get {
             self.contentView.layer.cornerRadius
         }
@@ -21,6 +21,7 @@ public class CUICardView: UIView {
             super.init(frame: frame)
             
             self.configuration = configuration
+            self.contentViewInsets = configuration.contentViewInsets
             self.commonInit()
         }
     
@@ -58,7 +59,14 @@ public extension CUICardView {
         self.alpha = 0
         self.contentView.alpha = 0
         self.contentView.layoutIfNeeded()
-        self.contentView.transform = CGAffineTransform(translationX: 0, y: self.contentView.frame.height)
+        switch self.configuration.verticalPosition {
+            case .top:
+                self.contentView.transform = CGAffineTransform(translationX: 0, y: -self.contentView.frame.height)
+            case .center:
+                self.contentView.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
+            case .bottom:
+                self.contentView.transform = CGAffineTransform(translationX: 0, y: self.contentView.frame.height)
+        }
         self.contentView.addShadow(forDesign: self.configuration.shadow)
         
         UIView.animate(
@@ -85,7 +93,14 @@ public extension CUICardView {
             animations: {
                 self.alpha = 0
                 self.contentView.alpha = 0
-                self.contentView.transform = CGAffineTransform(translationX: 0, y: self.contentView.frame.height)
+                switch self.configuration.verticalPosition {
+                    case .top:
+                        self.contentView.transform = CGAffineTransform(translationX: 0, y: -self.contentView.frame.height)
+                    case .center:
+                        self.contentView.transform = CGAffineTransform(scaleX: 0.6, y: 0.6)
+                    case .bottom:
+                        self.contentView.transform = CGAffineTransform(translationX: 0, y: self.contentView.frame.height)
+                }
             },
             completion: { _ in
                 self.configuration.onDismiss?()
@@ -99,26 +114,58 @@ public extension CUICardView {
 private extension CUICardView {
     
     func commonInit() {
-        self.contentView = ContentView()
-            .settingCornerRadius(20)
-            .usingAutoLayout()
-            .adding(toView: self)
-            .constraining(
-                \.topAnchor,
-                 greaterThanOrEqualToAnchor: self.safeAreaLayoutGuide.topAnchor,
-                 withConstant: self.contentViewInsets.top)
-            .constraining(
-                \.trailingAnchor,
-                 toAnchor: self.safeAreaLayoutGuide.trailingAnchor,
-                 withConstant: -self.contentViewInsets.right)
-            .constraining(
-                \.bottomAnchor,
-                 toAnchor: self.safeAreaLayoutGuide.bottomAnchor,
-                 withConstant: -self.contentViewInsets.bottom)
-            .constraining(
-                \.leadingAnchor,
-                 toAnchor: self.safeAreaLayoutGuide.leadingAnchor,
-                 withConstant: self.contentViewInsets.left)
+        self.contentView = ContentView(
+            dismissHandler: { [weak self] in
+                self?.dismiss()
+            })
+        .settingCornerRadius(self.configuration.cornerRadius)
+        .usingAutoLayout()
+        .adding(toView: self)
+        .constraining(
+            \.trailingAnchor,
+             toAnchor: self.safeAreaLayoutGuide.trailingAnchor,
+             withConstant: -self.contentViewInsets.right)
+        .constraining(
+            \.leadingAnchor,
+             toAnchor: self.safeAreaLayoutGuide.leadingAnchor,
+             withConstant: self.contentViewInsets.left)
+        
+        switch self.configuration.verticalPosition {
+            case .top:
+                self.contentView
+                    .constraining(
+                        \.topAnchor,
+                         toAnchor: self.safeAreaLayoutGuide.topAnchor,
+                         withConstant: self.contentViewInsets.top)
+                    .constraining(
+                        \.bottomAnchor,
+                         greaterThanOrEqualToAnchor: self.safeAreaLayoutGuide.bottomAnchor,
+                         withConstant: -self.contentViewInsets.bottom,
+                         usingPriority: .defaultLow)
+            case .center:
+                self.contentView
+                    .constraining(
+                        \.topAnchor,
+                         greaterThanOrEqualToAnchor: self.safeAreaLayoutGuide.topAnchor,
+                         withConstant: self.contentViewInsets.top,
+                         usingPriority: .defaultLow)
+                    .constraining(
+                        \.bottomAnchor,
+                         greaterThanOrEqualToAnchor: self.safeAreaLayoutGuide.bottomAnchor,
+                         withConstant: -self.contentViewInsets.bottom,
+                         usingPriority: .defaultLow)
+                    .constraining(\.centerYAnchor, toAnchor: self.centerYAnchor)
+            case .bottom:
+                self.contentView
+                    .constraining(
+                        \.topAnchor,
+                         greaterThanOrEqualToAnchor: self.safeAreaLayoutGuide.topAnchor,
+                         withConstant: self.contentViewInsets.top)
+                    .constraining(
+                        \.bottomAnchor,
+                         toAnchor: self.safeAreaLayoutGuide.bottomAnchor,
+                         withConstant: -self.contentViewInsets.bottom)
+        }
         
         self.setting(\.backgroundColor, self.configuration.colorStyle.backgroundColor)
         self.contentView.setting(\.backgroundColor, self.configuration.colorStyle.contentBackgroundColor)
@@ -130,6 +177,9 @@ private extension CUICardView {
     
     @objc
     func handleTap(_ tapGestureRecognizer: UITapGestureRecognizer) {
+        guard self.configuration.tapToDismiss else {
+            return
+        }
         self.dismiss()
     }
     
