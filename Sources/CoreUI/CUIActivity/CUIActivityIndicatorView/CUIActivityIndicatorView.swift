@@ -4,11 +4,6 @@ import UIKit
 public class CUIActivityIndicatorView: UIView {
     
     private(set) var activityAnimatable: CUIActivityAnimatableView!
-    public var color: UIColor = UIColor.black {
-        willSet {
-            self.activityAnimatable.setColor(newValue)
-        }
-    }
     public var isAnimating: Bool {
         return self.activityAnimatable.isAnimating
     }
@@ -35,18 +30,32 @@ public class CUIActivityIndicatorView: UIView {
         fatalError("init(coder:) has not been implemented")
     }
     
-    public func startAnimating() {
+}
+
+public extension CUIActivityIndicatorView {
+    
+    func startAnimating() {
         self.activityAnimatable.startAnimating()
         Animator.fadeIn()
             .animate(self)
     }
     
-    public func stopAnimating() {
+    func stopAnimating() {
         Animator.fadeOut(
             completion: { [weak self] _ in
                 self?.activityAnimatable.stopAnimating()
             })
         .animate(self)
+    }
+    
+    func setColor(_ color: UIColor) {
+        self.activityAnimatable.setColor(color)
+    }
+    
+    @discardableResult
+    func settingColor(_ color: UIColor) -> Self {
+        self.setColor(color)
+        return self
     }
     
 }

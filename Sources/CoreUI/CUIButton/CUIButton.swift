@@ -22,24 +22,11 @@ public class CUIButton: UIButton {
             self.cuiConfiguration = configuration
             self.activityIndicator = CUIActivityIndicatorView(activityAnimatable)
                 .adding(toView: self)
-                .setting(\CUIActivityIndicatorView.color, .white)
                 .usingAutoLayout()
                 .constraining(\.centerXAnchor, toAnchor: self.centerXAnchor)
                 .constraining(\.centerYAnchor, toAnchor: self.centerYAnchor)
             
-            self.activityIndicator.color = configuration.loadingColor
-            
-            self.settingCornerRadius(configuration.cornerRadius)
-                .setting(\CUIButton.contentEdgeInsets, configuration.contentEdgeInsets)
-                .settingTitleFont(configuration.typography.font)
-                .settingTitleColor(configuration.titleColors.normal, for: .normal)
-                .settingTitleColor(configuration.titleColors.disabled, for: .disabled)
-                .settingTitleColor(configuration.titleColors.selected, for: .selected)
-                .settingTitleColor(configuration.titleColors.highlighted, for: .highlighted)
-                .settingBackgroundColor(configuration.backgroundColors.normal, for: .normal)
-                .settingBackgroundColor(configuration.backgroundColors.disabled, for: .disabled)
-                .settingBackgroundColor(configuration.backgroundColors.selected, for: .selected)
-                .settingBackgroundColor(configuration.backgroundColors.highlighted, for: .highlighted)
+            self.setConfiguration(configuration)
         }
     
     @available(*, unavailable)
@@ -58,7 +45,11 @@ public class CUIButton: UIButton {
         
     }
     
-    public func setAnimating(_ isLoading: Bool) {
+}
+
+public extension CUIButton {
+    
+    func setAnimating(_ isLoading: Bool) {
         DispatchQueue.main.async {
             if isLoading {
                 Animator.fadeOut(completion: { [weak self] _ in
@@ -74,7 +65,30 @@ public class CUIButton: UIButton {
                 self.isEnabled = self.previousEnabledState
             }
         }
+    }
+    
+    func setConfiguration(_ configuration: CUIButton.Configuration) {
+        self.cuiConfiguration = configuration
+        self.activityIndicator
+            .settingColor(configuration.loadingColor)
         
+        self.settingCornerRadius(configuration.cornerRadius)
+            .setting(\CUIButton.contentEdgeInsets, configuration.contentEdgeInsets)
+            .settingTitleFont(configuration.typography.font)
+            .settingTitleColor(configuration.titleColors.normal, for: .normal)
+            .settingTitleColor(configuration.titleColors.disabled, for: .disabled)
+            .settingTitleColor(configuration.titleColors.selected, for: .selected)
+            .settingTitleColor(configuration.titleColors.highlighted, for: .highlighted)
+            .settingBackgroundColor(configuration.backgroundColors.normal, for: .normal)
+            .settingBackgroundColor(configuration.backgroundColors.disabled, for: .disabled)
+            .settingBackgroundColor(configuration.backgroundColors.selected, for: .selected)
+            .settingBackgroundColor(configuration.backgroundColors.highlighted, for: .highlighted)
+    }
+    
+    @discardableResult
+    func settingConfiguration(_ configuration: CUIButton.Configuration) -> Self {
+        self.setConfiguration(configuration)
+        return self
     }
     
 }

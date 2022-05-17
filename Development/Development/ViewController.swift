@@ -21,181 +21,152 @@ class ViewController: UIViewController {
     override func loadView() {
         super.loadView()
         
-        //        CUITextView()
-        //            .usingAutoLayout()
-        //            .settingModel(
-        //                .init(
-        //                    title: "First Message",
-        //                    placeholder: "Message...",
-        //                    colors: .default,
-        //                    typography: .default))
-        //            .adding(toView: self.view)
-        //            .constraining(\.trailingAnchor, toView: self.view, withConstant: -20)
-        //            .constraining(\.bottomAnchor, toAnchor: self.view.safeAreaLayoutGuide.bottomAnchor, withConstant: -24)
-        //            .constraining(\.leadingAnchor, toView: self.view, withConstant: 20)
+        let initialTitle: String = "Lorem ipsum"
+        let titleSubject: CurrentValueSubject<String, Never> = .init(initialTitle)
+        let initialMessage: String = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
+        let messageSubject: CurrentValueSubject<String, Never> = .init(initialMessage)
+        let initialMessageTwo: String = "Nulla ipsum purus, ullamcorper sed felis tempor, tincidunt congue arcu."
+        let messageTwoSubject: CurrentValueSubject<String, Never> = .init(initialMessageTwo)
+        let initialMessageThree: String = "Aliquam rhoncus lacus fermentum eros posuere consequat. Nam feugiat diam sit amet accumsan euismod. Proin vestibulum metus vitae enim venenatis, eget porta tellus tempus. Cras imperdiet quam varius felis euismod, sit amet vestibulum sem dignissim."
+        let messageThreeSubject: CurrentValueSubject<String, Never> = .init(initialMessageThree)
         
-        if #available(iOS 15, *) {
-            //            var buttonConfiguration = UIButton.Configuration.filled()
-            //            buttonConfiguration.titleAlignment = .center
-            //            buttonConfiguration.buttonSize = .large
-            //            buttonConfiguration.cornerStyle = .large
-            //            buttonConfiguration.title = "Present Banner"
-            //            buttonConfiguration.image = UIImage(systemName: "platter.filled.top.iphone")
-            //            buttonConfiguration.imagePadding = 6
-            //            buttonConfiguration.imagePlacement = .trailing
-            
-            let initialTitle: String = "Lorem ipsum"
-            let titleSubject: CurrentValueSubject<String, Never> = .init(initialTitle)
-            let initialMessage: String = "Lorem ipsum dolor sit amet, consectetur adipiscing elit."
-            let messageSubject: CurrentValueSubject<String, Never> = .init(initialMessage)
-            let initialMessageTwo: String = "Nulla ipsum purus, ullamcorper sed felis tempor, tincidunt congue arcu."
-            let messageTwoSubject: CurrentValueSubject<String, Never> = .init(initialMessageTwo)
-            let initialMessageThree: String = "Aliquam rhoncus lacus fermentum eros posuere consequat. Nam feugiat diam sit amet accumsan euismod. Proin vestibulum metus vitae enim venenatis, eget porta tellus tempus. Cras imperdiet quam varius felis euismod, sit amet vestibulum sem dignissim."
-            let messageThreeSubject: CurrentValueSubject<String, Never> = .init(initialMessageThree)
-            
-            let button = UIButton(
-                primaryAction: UIAction(
-                    handler: { [weak self] action in
-                        self?.view.endEditing(true)
-                        
-                        let colorStyle: CUIBannerView.ColorStyle = Bool.random() ?
-                            .standard : Bool.random() ?
-                            .success : .error
-                        
-                        let configuration = CUIBannerView.Configuration(
-                            colorStyle: colorStyle,
-                            position: Bool.random() ? .top : .bottom,
-                            animation: .default)
-                        
-                        let model = CUIBannerView.Model(
-                            items: [
-                                .item(
-                                    text: titleSubject.value,
-                                    typography: .systemTypography(withSize: 24, weight: .bold),
-                                    alignment: .natural),
-                                .item(
-                                    text: messageSubject.value,
-                                    typography: .systemTypography(withSize: 16),
-                                    alignment: .natural),
-                                .item(
-                                    text: messageTwoSubject.value,
-                                    typography: .systemTypography(withSize: 12, weight: .light),
-                                    alignment: .natural),
-                                .item(
-                                    text: messageThreeSubject.value,
-                                    typography: .systemTypography(withSize: 12, weight: .light),
-                                    alignment: .natural)
-                            ],
-                            leadingImage: .item(
-                                image: UIImage("🤯"),
-                                width: 60,
-                                height: 60,
-                                cornerRadius: 30),
-                            trailingImage: .item(
-                                image: UIImage(systemName: "xmark.circle.fill"),
-                                width: 30,
-                                height: 30,
-                                tapHandler: { banner in
-                                    banner.dismiss()
-                                }),
-                            tapHandler: { banner in
-                                Log.debug("Banner tapped")
-                            })
-                        
-                        let background: CUIBannerView.BackgroundView = Bool.random() ? .solid : .floating
-                        
-                        self?.presentBannerView(
-                            with: configuration,
-                            model: model,
-                            background: background)
-                        
-                    }))
-                .constraining(\.heightAnchor, withConstant: 50)
-                .setting(\UIButton.backgroundColor, .systemBlue)
-                .settingTitle("Present Banner")
-                .settingTitleColor(.white, for: .normal)
-                .settingCornerRadius(8)
-            //                .setting(\UIButton.configuration, buttonConfiguration)
-            
-            let label = CUILabel()
-                .setting(\CUILabel.text, "Hello")
-                .setting(\CUILabel.textAlignment, .center)
-                .setting(\CUILabel.typography, .systemTypography(withSize: 40, weight: .heavy))
-                .usingAutoLayout()
-            
-            let titleField = CUITextField()
-                .settingModel(
-                    .init(
-                        title: "Title",
-                        placeholder: "Title...",
-                        colors: .default,
-                        typography: .default))
-            let messageView = CUITextView()
-                .settingModel(
-                    .init(
-                        title: "First Message",
-                        placeholder: "Message...",
-                        colors: .default,
-                        typography: .default))
-            
-            let messageTwoView = CUITextView()
-                .settingModel(
-                    .init(
-                        title: "Second Message",
-                        placeholder: "Message...",
-                        colors: .default,
-                        typography: .default))
-            let messageThreeView = CUITextView()
-                .settingModel(
-                    .init(
-                        title: "Third Message",
-                        placeholder: "Message...",
-                        colors: .default,
-                        typography: .default))
-            
-            DispatchQueue.main.async {
-                titleField.text = initialTitle
-                messageView.text = initialMessage
-                messageTwoView.text =  initialMessageTwo
-                messageThreeView.text = initialMessageThree
-            }
-            
-            titleField
-                .textCurrentValueSubject()
-                .assign(to: \.value, on: titleSubject)
-                .store(in: &cancellables)
-            
-            messageView
-                .textCurrentValueSubject()
-                .assign(to: \.value, on: messageSubject)
-                .store(in: &cancellables)
-            
-            messageTwoView
-                .textCurrentValueSubject()
-                .assign(to: \.value, on: messageTwoSubject)
-                .store(in: &cancellables)
-            
-            messageThreeView
-                .textCurrentValueSubject()
-                .assign(to: \.value, on: messageThreeSubject)
-                .store(in: &cancellables)
-            
-            UIStackView()
-                .addingArrangedSubviews([
-                    label,
-                    titleField,
-                    messageView,
-                    messageTwoView,
-                    messageThreeView,
-                    button,
-                    CUIButton(
-                        configuration: .default(
-                            cornerRadius: 8,
-                            backgroundColors: .init(normal: .systemBlue, highlighted: .systemGreen, disabled: .separator, selected: .systemPink),
-                            titleColors: .init(normal: .white, highlighted: .secondaryLabel, disabled: .separator, selected: .secondaryLabel),
-                            loadingColor: .white),
-                        .pulsingDots)
-                    .constraining(\.heightAnchor, withConstant: 50)
+        let configuration = CUIButton.Configuration
+            .default(
+                cornerRadius: 8,
+                backgroundColors: .init(normal: .systemBlue, highlighted: .systemGreen, disabled: .separator, selected: .systemPink),
+                titleColors: .init(normal: .white, highlighted: .secondaryLabel, disabled: .separator, selected: .secondaryLabel),
+                loadingColor: .white)
+        
+        let button = CUIButton(configuration: configuration, .pulsingDots)
+            .addingHandler(forEvent: .touchUpInside, action: { [weak self] action in
+                self?.view.endEditing(true)
+                
+                let colorStyle: CUIBannerView.ColorStyle = Bool.random() ?
+                    .standard : Bool.random() ?
+                    .success : .error
+                
+                let configuration = CUIBannerView.Configuration(
+                    colorStyle: colorStyle,
+                    position: Bool.random() ? .top : .bottom,
+                    animation: .default)
+                
+                let model = CUIBannerView.Model(
+                    items: [
+                        .item(
+                            text: titleSubject.value,
+                            typography: .systemTypography(withSize: 24, weight: .bold),
+                            alignment: .natural),
+                        .item(
+                            text: messageSubject.value,
+                            typography: .systemTypography(withSize: 16),
+                            alignment: .natural),
+                        .item(
+                            text: messageTwoSubject.value,
+                            typography: .systemTypography(withSize: 12, weight: .light),
+                            alignment: .natural),
+                        .item(
+                            text: messageThreeSubject.value,
+                            typography: .systemTypography(withSize: 12, weight: .light),
+                            alignment: .natural)
+                    ],
+                    leadingImage: .item(
+                        image: UIImage("🤯"),
+                        width: 60,
+                        height: 60,
+                        cornerRadius: 30),
+                    trailingImage: .item(
+                        image: UIImage(systemName: "xmark.circle.fill"),
+                        width: 30,
+                        height: 30,
+                        tapHandler: { banner in
+                            banner.dismiss()
+                        }),
+                    tapHandler: { banner in
+                        Log.debug("Banner tapped")
+                    })
+                
+                let background: CUIBannerView.BackgroundView = Bool.random() ? .solid : .floating
+                
+                self?.presentBannerView(
+                    with: configuration,
+                    model: model,
+                    background: background)
+                
+            })
+            .settingTitle("Present Banner")
+        
+        let label = CUILabel()
+            .setting(\CUILabel.text, "Hello")
+            .setting(\CUILabel.textAlignment, .center)
+            .setting(\CUILabel.typography, .systemTypography(withSize: 40, weight: .heavy))
+            .usingAutoLayout()
+        
+        let titleField = CUITextField()
+            .settingModel(
+                .init(
+                    title: "Title",
+                    placeholder: "Title...",
+                    colors: .default,
+                    typography: .default))
+        let messageView = CUITextView()
+            .settingModel(
+                .init(
+                    title: "First Message",
+                    placeholder: "Message...",
+                    colors: .default,
+                    typography: .default))
+        
+        let messageTwoView = CUITextView()
+            .settingModel(
+                .init(
+                    title: "Second Message",
+                    placeholder: "Message...",
+                    colors: .default,
+                    typography: .default))
+        let messageThreeView = CUITextView()
+            .settingModel(
+                .init(
+                    title: "Third Message",
+                    placeholder: "Message...",
+                    colors: .default,
+                    typography: .default))
+        
+        DispatchQueue.main.async {
+            titleField.text = initialTitle
+            messageView.text = initialMessage
+            messageTwoView.text =  initialMessageTwo
+            messageThreeView.text = initialMessageThree
+        }
+        
+        titleField
+            .textCurrentValueSubject()
+            .assign(to: \.value, on: titleSubject)
+            .store(in: &cancellables)
+        
+        messageView
+            .textCurrentValueSubject()
+            .assign(to: \.value, on: messageSubject)
+            .store(in: &cancellables)
+        
+        messageTwoView
+            .textCurrentValueSubject()
+            .assign(to: \.value, on: messageTwoSubject)
+            .store(in: &cancellables)
+        
+        messageThreeView
+            .textCurrentValueSubject()
+            .assign(to: \.value, on: messageThreeSubject)
+            .store(in: &cancellables)
+        
+        UIStackView()
+            .addingArrangedSubviews([
+                label,
+                titleField,
+                messageView,
+                messageTwoView,
+                messageThreeView,
+                button,
+                CUIButton(configuration: configuration, .pulsingDots)
                     .settingTitle("Show Loading")
                     .addingHandler(forEvent: .touchUpInside, action: { [weak self] control in
                         guard let button = control as? CUIButton else {
@@ -212,43 +183,33 @@ class ViewController: UIViewController {
                                 button.isLoading = false
                             })
                     }),
-                    UIButton(
-                        primaryAction: UIAction(
-                            handler: { [weak self] action in
-                                self?.view.endEditing(true)
-                                self?.presentCard()
-                            }))
-                    .constraining(\.heightAnchor, withConstant: 50)
-                    .setting(\UIButton.backgroundColor, .systemBlue)
+                CUIButton(configuration: configuration, .pulsingDots)
                     .settingTitle("Present Card")
-                    .settingTitleColor(.white, for: .normal)
-                    .settingCornerRadius(8),
-                    UIButton(
-                        primaryAction: UIAction(
-                            handler: { [weak self] action in
-                                self?.view.endEditing(true)
-                                self?.presentAlert()
-                            }))
-                    .constraining(\.heightAnchor, withConstant: 50)
-                    .setting(\UIButton.backgroundColor, .systemBlue)
+                    .addingHandler(forEvent: .touchUpInside, action: { [weak self] action in
+                        self?.view.endEditing(true)
+                        self?.presentCard()
+                    }),
+                CUIButton(configuration: configuration, .pulsingDots)
                     .settingTitle("Present Alert")
-                    .settingTitleColor(.white, for: .normal)
-                    .settingCornerRadius(8)
+                    .addingHandler(forEvent: .touchUpInside, action: { [weak self] action in
+                        self?.view.endEditing(true)
+                        self?.presentAlert()
+                    })
+            ])
+            .setting(\UIStackView.axis, .vertical)
+            .setting(\UIStackView.spacing, 16)
+            .adding(
+                to: self.view,
+                withConstraints: [
+                    equal(\.leadingAnchor, constant: 40),
+                    equal(\.trailingAnchor, constant: -40),
+                    equal(\.topAnchor, \.safeAreaLayoutGuide.topAnchor),
+                    equal(\.bottomAnchor, \.keyboardLayoutGuide.topAnchor, constant: -24)
                 ])
-                .setting(\UIStackView.axis, .vertical)
-                .setting(\UIStackView.spacing, 16)
-                .adding(
-                    to: self.view,
-                    withConstraints: [
-                        equal(\.leadingAnchor, constant: 40),
-                        equal(\.trailingAnchor, constant: -40),
-                        equal(\.topAnchor, \.safeAreaLayoutGuide.topAnchor),
-                        equal(\.bottomAnchor, \.keyboardLayoutGuide.topAnchor, constant: -24)
-                    ])
-            
-            Log.debug(self.view.keyboardLayoutGuide.identifier)
-            
-        }
+        
+        Log.debug(self.view.keyboardLayoutGuide.identifier)
+        
+        
     }
     
     override func viewDidLoad() {
@@ -310,7 +271,7 @@ class ViewController: UIViewController {
         //                Log.debug($0)
         //            })
         //            .store(in: &cancellables)
-                
+        
         self.showLoading()
         
         [
@@ -345,7 +306,7 @@ class ViewController: UIViewController {
             .adding(toView: dimmedView)
             .usingAutoLayout()
             .setting(\.transform, .init(scaleX: 3, y: 3))
-            .setting(\CUIActivityIndicatorView.color, .systemPink)
+            .settingColor(.systemBlue)
             .constraining(\.centerXAnchor, toAnchor: dimmedView.centerXAnchor)
             .constraining(\.centerYAnchor, toAnchor: dimmedView.centerYAnchor)
         
@@ -361,7 +322,7 @@ class ViewController: UIViewController {
                 .animate(dimmedView)
                 self.activityIndicator.stopAnimating()
             })
-
+        
     }
     
     func composeFunction() {
