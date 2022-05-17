@@ -12,6 +12,8 @@ public class CUIButton: UIButton {
         }
     }
     
+    private var previousEnabledState: Bool = true
+    
     required public init(
         frame: CGRect = .zero,
         configuration: Configuration,
@@ -63,12 +65,13 @@ public class CUIButton: UIButton {
                     self?.activityIndicator.startAnimating()
                 })
                 .animate(self.titleLabel)
+                self.previousEnabledState = self.isEnabled
                 self.isEnabled = false
             } else {
                 self.activityIndicator.stopAnimating()
                 Animator.fadeIn()
                     .animate(self.titleLabel)
-                self.isEnabled = true
+                self.isEnabled = self.previousEnabledState
             }
         }
         

@@ -18,7 +18,7 @@ extension CUICardView {
         public let colorStyle: CUICardView.ColorStyle
         public let animation: AnimationConfiguration
         public let shadow: ShadowDesignable
-        public let onDismiss: DismissHandler?
+        public let onDismiss: ClosureWithoutInput<Void>?
         
         public init(
             cornerRadius: CGFloat,
@@ -28,7 +28,7 @@ extension CUICardView {
             colorStyle: CUICardView.ColorStyle,
             animation: AnimationConfiguration,
             shadow: ShadowDesignable = .floating,
-            onDismiss: DismissHandler?) {
+            onDismiss: ClosureWithoutInput<Void>?) {
                 self.cornerRadius = cornerRadius
                 self.contentViewInsets = contentViewInsets
                 self.verticalPosition = verticalPosition
@@ -38,9 +38,7 @@ extension CUICardView {
                 self.shadow = shadow
                 self.onDismiss = onDismiss
             }
-        
-        public typealias DismissHandler = () -> Void
-        
+                
         public static var `default`: CUICardView.Configuration {
             return CUICardView.Configuration(
                 cornerRadius: 20,
