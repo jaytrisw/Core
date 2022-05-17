@@ -4,14 +4,14 @@ public extension UIControl {
     
     func addHandler(
         forEvent event: UIControl.Event,
-        action: @escaping () -> Void) {
+        action: @escaping (UIControl) -> Void) {
             self.actionHandler(action: action)
             self.addTarget(self, action: #selector(handler), for: event)
         }
     
     func addingHandler(
         forEvent event: UIControl.Event,
-        action: @escaping () -> Void) -> Self {
+        action: @escaping (UIControl) -> Void) -> Self {
             self.addHandler(forEvent: event, action: action)
             return self
         }
@@ -21,12 +21,12 @@ public extension UIControl {
 private extension UIControl {
     
     enum Storage {
-        static var actions: [Int: (() -> Void)] = [:]
+        static var actions: [Int: ((UIControl) -> Void)] = [:]
     }
     
-    func actionHandler(action: (() -> Void)? = nil) {
+    func actionHandler(action: ((UIControl) -> Void)? = nil) {
         guard let action = action else {
-            Storage.actions[self.hashValue]?()
+            Storage.actions[self.hashValue]?(self)
             return
         }
         Storage.actions[self.hashValue] = action

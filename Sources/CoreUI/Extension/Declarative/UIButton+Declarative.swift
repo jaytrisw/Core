@@ -9,13 +9,13 @@ extension UIButton {
     }
     
     @discardableResult
-    public func settingBackgroundColor(_ backgroundColor: UIColor, for state: UIControl.State) -> Self {
-        self.setBackgroundImage(backgroundColor.image(), for: state)
+    public func settingBackgroundColor(_ backgroundColor: UIColor?, for state: UIControl.State) -> Self {
+        self.setBackgroundImage(backgroundColor?.image(), for: state)
         return self
     }
     
     @discardableResult
-    public func settingTitleColor(_ textColor: UIColor, for state: UIControl.State) -> Self {
+    public func settingTitleColor(_ textColor: UIColor?, for state: UIControl.State) -> Self {
         self.setTitleColor(textColor, for: state)
         return self
     }

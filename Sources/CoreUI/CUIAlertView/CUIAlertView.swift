@@ -28,7 +28,7 @@ public extension UIViewController {
                         .settingCornerRadius(configuration.cornerRadius)
                         .settingTitleFont(configuration.titleFont)
                         .constraining(\.heightAnchor, withConstant: 50)
-                        .addingHandler(forEvent: .touchUpInside, action: {
+                        .addingHandler(forEvent: .touchUpInside, action: { button in
                             configuration.handler(parentView)
                         })
                 }

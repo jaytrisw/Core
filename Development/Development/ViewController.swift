@@ -180,13 +180,6 @@ class ViewController: UIViewController {
                 .assign(to: \.value, on: messageThreeSubject)
                 .store(in: &cancellables)
             
-            let cuiButton = CUIButton(.pulsingDots)
-                .constraining(\.heightAnchor, withConstant: 50)
-                .setting(\UIButton.backgroundColor, .systemBlue)
-                .settingTitle("Show Loading")
-                .settingTitleColor(.white, for: .normal)
-                .settingCornerRadius(8)
-            
             UIStackView()
                 .addingArrangedSubviews([
                     label,
@@ -195,25 +188,30 @@ class ViewController: UIViewController {
                     messageTwoView,
                     messageThreeView,
                     button,
-//                    UIButton(
-//                        primaryAction: UIAction(
-//                            handler: { [weak self] action in
-//                                self?.view.endEditing(true)
-//                                self?.showLoading()
-//                            }))
-                    cuiButton
-                        .addingHandler(forEvent: .touchUpInside, action: { [weak self] in
-                            self?.view.endEditing(true)
-                            DispatchQueue.main.async {
-                                cuiButton.isLoading = true
-                            }
-                            
-                            DispatchQueue.main.asyncAfter(
-                                deadline: .now() + 5,
-                                execute: {
-                                    cuiButton.isLoading = false
-                                })
-                        }),
+                    CUIButton(
+                        configuration: .default(
+                            cornerRadius: 8,
+                            backgroundColors: .init(normal: .systemBlue, highlighted: .systemGreen, disabled: .separator, selected: .systemPink),
+                            titleColors: .init(normal: .white, highlighted: .secondaryLabel, disabled: .separator, selected: .secondaryLabel),
+                            loadingColor: .white),
+                        .pulsingDots)
+                    .constraining(\.heightAnchor, withConstant: 50)
+                    .settingTitle("Show Loading")
+                    .addingHandler(forEvent: .touchUpInside, action: { [weak self] control in
+                        guard let button = control as? CUIButton else {
+                            return
+                        }
+                        self?.view.endEditing(true)
+                        DispatchQueue.main.async {
+                            button.isLoading = true
+                        }
+                        
+                        DispatchQueue.main.asyncAfter(
+                            deadline: .now() + 5,
+                            execute: {
+                                button.isLoading = false
+                            })
+                    }),
                     UIButton(
                         primaryAction: UIAction(
                             handler: { [weak self] action in
@@ -313,6 +311,8 @@ class ViewController: UIViewController {
         //            })
         //            .store(in: &cancellables)
                 
+        self.showLoading()
+        
         [
             Item(title: "Wasser"),
             Item(title: "Tur"),
@@ -344,6 +344,7 @@ class ViewController: UIViewController {
         self.activityIndicator = CUIActivityIndicatorView(activityView)
             .adding(toView: dimmedView)
             .usingAutoLayout()
+            .setting(\.transform, .init(scaleX: 3, y: 3))
             .setting(\CUIActivityIndicatorView.color, .systemPink)
             .constraining(\.centerXAnchor, toAnchor: dimmedView.centerXAnchor)
             .constraining(\.centerYAnchor, toAnchor: dimmedView.centerYAnchor)
