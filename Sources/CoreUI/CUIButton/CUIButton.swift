@@ -3,7 +3,7 @@ import UIKit
 
 public class CUIButton: UIButton {
     
-    private var activityIndicator: CUIActivityIndicatorView!
+    private var activityIndicator: CUIActivityIndicatorView?
     private var cuiConfiguration: CUIButton.Configuration!
     
     public var isLoading: Bool = false {
@@ -17,14 +17,17 @@ public class CUIButton: UIButton {
     required public init(
         frame: CGRect = .zero,
         configuration: Configuration,
-        _ activityAnimatable: CUIActivityAnimatableView) {
+        _ activityAnimatable: CUIActivityAnimatableView? = nil) {
             super.init(frame: frame)
             self.cuiConfiguration = configuration
-            self.activityIndicator = CUIActivityIndicatorView(activityAnimatable)
-                .adding(toView: self)
-                .usingAutoLayout()
-                .constraining(\.centerXAnchor, toAnchor: self.centerXAnchor)
-                .constraining(\.centerYAnchor, toAnchor: self.centerYAnchor)
+            
+            if let activityAnimatable = activityAnimatable {
+                self.activityIndicator = CUIActivityIndicatorView(activityAnimatable)
+                    .adding(toView: self)
+                    .usingAutoLayout()
+                    .constraining(\.centerXAnchor, toAnchor: self.centerXAnchor)
+                    .constraining(\.centerYAnchor, toAnchor: self.centerYAnchor)
+            }
             
             self.setConfiguration(configuration)
         }
@@ -53,13 +56,13 @@ public extension CUIButton {
         DispatchQueue.main.async {
             if isLoading {
                 Animator.fadeOut(completion: { [weak self] _ in
-                    self?.activityIndicator.startAnimating()
+                    self?.activityIndicator?.startAnimating()
                 })
                 .animate(self.titleLabel)
                 self.previousEnabledState = self.isEnabled
                 self.isEnabled = false
             } else {
-                self.activityIndicator.stopAnimating()
+                self.activityIndicator?.stopAnimating()
                 Animator.fadeIn()
                     .animate(self.titleLabel)
                 self.isEnabled = self.previousEnabledState
@@ -69,7 +72,7 @@ public extension CUIButton {
     
     func setConfiguration(_ configuration: CUIButton.Configuration) {
         self.cuiConfiguration = configuration
-        self.activityIndicator
+        self.activityIndicator?
             .settingColor(configuration.loadingColor)
         
         self.settingCornerRadius(configuration.cornerRadius)

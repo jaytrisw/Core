@@ -21,13 +21,8 @@ public extension UIViewController {
             self.presentingCard(configuration: configuration) { parentView, layoutGuide in
                 
                 let actionButtons: [UIButton] = actionConfigurations.map { configuration in
-                    return UIButton()
+                    return CUIButton(configuration: configuration.buttonConfiguration)
                         .settingTitle(configuration.title, for: .normal)
-                        .settingTitleColor(configuration.titleColor, for: .normal)
-                        .settingBackgroundColor(configuration.backgroundColor, for: .normal)
-                        .settingCornerRadius(configuration.cornerRadius)
-                        .settingTitleFont(configuration.titleFont)
-                        .constraining(\.heightAnchor, withConstant: 50)
                         .addingHandler(forEvent: .touchUpInside, action: { button in
                             configuration.handler(parentView)
                         })
@@ -74,25 +69,16 @@ public extension CUIAlertView {
     
     struct ActionConfiguration {
         
-        public var title: String
-        public var titleColor: UIColor
-        public var titleFont: UIFont
-        public var backgroundColor: UIColor
-        public var cornerRadius: CGFloat
+        public var title: String?
+        public var buttonConfiguration: CUIButton.Configuration
         public var handler: Closure<CUICardView.ContentView, Void>
         
         public init(
-            title: String,
-            titleColor: UIColor,
-            titleFont: UIFont,
-            backgroundColor: UIColor,
-            cornerRadius: CGFloat,
+            title: String?,
+            buttonConfiguration: CUIButton.Configuration,
             handler: @escaping Closure<CUICardView.ContentView, Void>) {
                 self.title = title
-                self.titleColor = titleColor
-                self.titleFont = titleFont
-                self.backgroundColor = backgroundColor
-                self.cornerRadius = cornerRadius
+                self.buttonConfiguration = buttonConfiguration
                 self.handler = handler
             }
         
@@ -100,14 +86,14 @@ public extension CUIAlertView {
     
     struct Model {
         
-        public var text: String
+        public var text: String?
         public var textAlignment: NSTextAlignment
         public var numberOfLines: Int
         public var textColor: UIColor
         public var font: UIFont
         
         public init(
-            text: String,
+            text: String?,
             textAlignment: NSTextAlignment,
             numberOfLines: Int,
             textColor: UIColor,

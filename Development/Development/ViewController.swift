@@ -392,20 +392,22 @@ class ViewController: UIViewController {
     func presentAlert() {
         let vibrateConfiguration = CUIAlertView.ActionConfiguration(
             title: "Vibrate",
-            titleColor: .label,
-            titleFont: .systemFont(ofSize: 17, weight: .medium),
-            backgroundColor: .secondarySystemBackground,
-            cornerRadius: 12,
+            buttonConfiguration: .default(
+                typography: .systemTypography(withSize: 15, weight: .regular),
+                backgroundColors: .defaultBackgroundColors,
+                titleColors: .defaultTitleColors,
+                loadingColor: .white),
             handler: { _ in
                 UIImpactFeedbackGenerator(style: .heavy)
                     .impactOccurred()
             })
         let dismissConfiguration = CUIAlertView.ActionConfiguration(
             title: "Dismiss",
-            titleColor: .white,
-            titleFont: .systemFont(ofSize: 17, weight: .semibold),
-            backgroundColor: .systemPink,
-            cornerRadius: 12,
+            buttonConfiguration: .default(
+                typography: .systemTypography(withSize: 15, weight: .regular),
+                backgroundColors: .defaultBackgroundColors,
+                titleColors: .defaultTitleColors,
+                loadingColor: .white),
             handler: { parentView in
                 parentView.dismiss()
             })

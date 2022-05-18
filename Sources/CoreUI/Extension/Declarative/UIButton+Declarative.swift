@@ -3,7 +3,7 @@ import UIKit
 extension UIButton {
     
     @discardableResult
-    public func settingTitle(_ title: String, for state: UIControl.State = .normal) -> Self {
+    public func settingTitle(_ title: String?, for state: UIControl.State = .normal) -> Self {
         self.setTitle(title, for: state)
         return self
     }
