@@ -13,7 +13,7 @@ public extension UIViewController {
                     cornerRadius: 28,
                     contentViewInsets: .proportional(36),
                     verticalPosition: .center,
-                    tapToDismiss: true,
+                    canDismissWithTap: false,
                     colorStyle: .default,
                     animation: .default,
                     onDismiss: nil)

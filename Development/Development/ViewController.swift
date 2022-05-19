@@ -46,6 +46,7 @@ class ViewController: UIViewController {
                     .success : .error
                 
                 let configuration = CUIBannerView.Configuration(
+                    duration: .greatestFiniteMagnitude,
                     colorStyle: colorStyle,
                     position: Bool.random() ? .top : .bottom,
                     animation: .default)
@@ -271,9 +272,7 @@ class ViewController: UIViewController {
         //                Log.debug($0)
         //            })
         //            .store(in: &cancellables)
-        
-        self.showLoading()
-        
+                
         [
             Item(title: "Wasser"),
             Item(title: "Tur"),

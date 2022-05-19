@@ -5,6 +5,7 @@ public class CUICardView: UIView {
     public var configuration: CUICardView.Configuration = .default
     public var contentView: ContentView!
     public var contentViewInsets: UIEdgeInsets = .proportional(24)
+    private var viewTranslation: CGPoint!
     
     private var cornerRadius: CGFloat {
         get {
@@ -173,15 +174,108 @@ private extension CUICardView {
         UITapGestureRecognizer(target: self, action: #selector(handleTap(_:)))
             .setting(\.delegate, self)
             .adding(toView: self)
+        
+        UIPanGestureRecognizer(target: self, action: #selector(handlePan(_:)))
+            .adding(toView: self.contentView)
+        
     }
     
     @objc
     func handleTap(_ tapGestureRecognizer: UITapGestureRecognizer) {
-        guard self.configuration.tapToDismiss else {
+        guard self.configuration.canDismissWithTap else {
             return
         }
         self.dismiss()
     }
+    
+    @objc
+    func handlePan(_ gestureRecognizer: UIPanGestureRecognizer) {
+        if case .center = self.configuration.verticalPosition {
+            return
+        }
+        self.viewTranslation = gestureRecognizer.translation(in: self.contentView)
+        switch gestureRecognizer.state {
+            case .changed:
+                guard self.shouldDragBanner() else {
+                    return
+                }
+                self.performAnimation(
+                    animations: {
+                        self.contentView.transform = CGAffineTransform(translationX: 0, y: self.viewTranslation.y)
+                    })
+                
+            case .ended:
+                guard self.isWithinThreshold() else {
+                    self.dismiss()
+                    return
+                }
+                self.performAnimation(
+                    animations: {
+                        self.contentView.transform = .identity
+                    })
+                
+            default:
+                break
+        }
+    }
+    
+    func shouldDragBanner() -> Bool {
+        switch self.configuration.verticalPosition {
+            case .top:
+                guard self.viewTranslation.y < 0 else {
+                    return false
+                }
+            case .bottom:
+                guard self.viewTranslation.y > 0 else {
+                    return false
+                }
+            case .center:
+                return false
+        }
+        return true
+    }
+    
+    func isWithinThreshold() -> Bool {
+        self.layoutIfNeeded()
+        self.contentView.layoutIfNeeded()
+        let threshold = self.contentView.frame.height / 2
+        switch self.configuration.verticalPosition {
+            case .top:
+                guard self.viewTranslation.y > threshold else {
+                    return false
+                }
+            case .bottom:
+                guard self.viewTranslation.y < threshold else {
+                    return false
+                }
+            case .center:
+                return false
+        }
+        return true
+    }
+    
+    typealias AnimationBlock = () -> Void
+    typealias AnimationCompletion = (Bool) -> Void
+    func performAnimation(
+        animations: @escaping AnimationBlock,
+        completion: AnimationCompletion? = nil) {
+            DispatchQueue
+                .main
+                .asyncAfter(
+                    interval: 0,
+                    execute: {
+                        UIView.animate(
+                            withDuration: self.configuration.animation.duration,
+                            delay: self.configuration.animation.delay,
+                            usingSpringWithDamping: self.configuration.animation.springWithDamping,
+                            initialSpringVelocity: self.configuration.animation.initialSpringVelocity,
+                            options: self.configuration.animation.options,
+                            animations: animations,
+                            completion: completion)
+                    })
+            
+        }
+
     
 }
 

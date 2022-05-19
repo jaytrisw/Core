@@ -14,25 +14,25 @@ extension CUICardView {
         public let cornerRadius: CGFloat
         public let contentViewInsets: UIEdgeInsets
         public let verticalPosition: VerticalPosition
-        public let tapToDismiss: Bool
+        public let canDismissWithTap: Bool
         public let colorStyle: CUICardView.ColorStyle
         public let animation: AnimationConfiguration
         public let shadow: ShadowDesignable
         public let onDismiss: ClosureWithoutInput<Void>?
         
         public init(
-            cornerRadius: CGFloat,
-            contentViewInsets: UIEdgeInsets,
-            verticalPosition: VerticalPosition,
-            tapToDismiss: Bool,
-            colorStyle: CUICardView.ColorStyle,
-            animation: AnimationConfiguration,
+            cornerRadius: CGFloat = 20,
+            contentViewInsets: UIEdgeInsets = .proportional(24),
+            verticalPosition: VerticalPosition = .bottom,
+            canDismissWithTap: Bool = true,
+            colorStyle: CUICardView.ColorStyle = .default,
+            animation: AnimationConfiguration = .default,
             shadow: ShadowDesignable = .floating,
-            onDismiss: ClosureWithoutInput<Void>?) {
+            onDismiss: ClosureWithoutInput<Void>? = nil) {
                 self.cornerRadius = cornerRadius
                 self.contentViewInsets = contentViewInsets
                 self.verticalPosition = verticalPosition
-                self.tapToDismiss = tapToDismiss
+                self.canDismissWithTap = canDismissWithTap
                 self.colorStyle = colorStyle
                 self.animation = animation
                 self.shadow = shadow
@@ -44,7 +44,7 @@ extension CUICardView {
                 cornerRadius: 20,
                 contentViewInsets: .proportional(24),
                 verticalPosition: .bottom,
-                tapToDismiss: true,
+                canDismissWithTap: true,
                 colorStyle: .default,
                 animation: .default,
                 shadow: .floating,
