@@ -5,19 +5,22 @@ import PackageDescription
 
 let package = Package(
     name: "Core",
+    platforms: [
+        .iOS(.v13)
+    ],
     products: [
         .library(
             name: "Core",
             targets: ["Core"]),
         .library(
-            name: "Tracking",
-            targets: ["Tracking"])
+            name: "CoreTracking",
+            targets: ["CoreTracking"])
     ],
     targets: [
         .target(
             name: "Core"),
         .target(
-            name: "Tracking",
+            name: "CoreTracking",
             dependencies: [
                 "Core"
             ]),
