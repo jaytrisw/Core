@@ -14,7 +14,10 @@ let package = Package(
             targets: ["Core"]),
         .library(
             name: "CoreTracking",
-            targets: ["CoreTracking"])
+            targets: ["CoreTracking"]),
+        .library(
+            name: "CoreUI",
+            targets: ["CoreUI"])
     ],
     targets: [
         .target(
@@ -23,6 +26,12 @@ let package = Package(
             name: "CoreTracking",
             dependencies: [
                 "Core"
+            ]),
+        .target(
+            name: "CoreUI",
+            dependencies: [
+                "Core",
+                "CoreTracking"
             ]),
         .testTarget(
             name: "CoreTests",
