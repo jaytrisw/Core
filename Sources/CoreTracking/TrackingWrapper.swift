@@ -44,7 +44,7 @@ public actor TrackingWrapper: Sendable {
 
     @globalActor
     fileprivate actor Actor: GlobalActor {
-        fileprivate static var shared: Actor = .init()
+        fileprivate static let shared: Actor = .init()
     }
 }
 

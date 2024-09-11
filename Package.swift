@@ -3,15 +3,22 @@
 
 import PackageDescription
 
+let swiftSettings: [SwiftSetting] = [
+    .enableExperimentalFeature("StrictConcurrency")
+]
+
 let package = Package(
     name: "Core",
     platforms: [
-        .iOS(.v13)
+        .iOS(.v14)
     ],
     products: [
         .library(
             name: "Core",
             targets: ["Core"]),
+        .library(
+            name: "CoreLogging",
+            targets: ["CoreLogging"]),
         .library(
             name: "CoreTracking",
             targets: ["CoreTracking"]),
@@ -21,18 +28,27 @@ let package = Package(
     ],
     targets: [
         .target(
-            name: "Core"),
+            name: "Core",
+            swiftSettings: swiftSettings),
+        .target(
+            name: "CoreLogging",
+            dependencies: [
+                "Core"
+            ],
+            swiftSettings: swiftSettings),
         .target(
             name: "CoreTracking",
             dependencies: [
                 "Core"
-            ]),
+            ],
+            swiftSettings: swiftSettings),
         .target(
             name: "CoreUI",
             dependencies: [
                 "Core",
                 "CoreTracking"
-            ]),
+            ],
+            swiftSettings: swiftSettings),
         .testTarget(
             name: "CoreTests",
             dependencies: ["Core"]
