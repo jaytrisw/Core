@@ -6,7 +6,7 @@ import OSLog
 /// This logger uses `LoggerActor` to ensure safe access and modifications across concurrency domains. By default, it is initialized with `Logger.default`, which enables logging for the default level and above.
 ///
 /// - Version: 1.0
-@LoggerActor public var logger: Loggable = Logger.default
+@LoggerActor public var logger: Loggable = .default
 
 /// Logs content with a specified level, component, and category, ensuring thread-safe access through `LoggerActor`.
 ///
@@ -66,18 +66,6 @@ public struct Logger: Sendable {
     public init(isLoggingEnabledFor: @Sendable @escaping (Level) -> Bool) {
         self.isLoggingEnabledFor = isLoggingEnabledFor
     }
-
-    /// A default logger instance with logging enabled for the default level and above.
-    ///
-    /// This static property provides a convenient way to access a default logger configuration, where logs at the default level and higher are enabled.
-    ///
-    /// ```swift
-    /// let logger = Logger.default
-    /// logger.log("Application started", level: .info, component: "AppLifecycle")
-    /// ```
-    public static var `default`: Self {
-        .init { $0 >= .default }
-    }
 }
 
 extension Logger: Loggable {
@@ -106,6 +94,20 @@ extension Logger: Loggable {
             os.Logger(subsystem: component.rawValue, category: category.rawValue)
                 .log(level: .init(level), "\(message.contentRepresentation)")
         }
+}
+
+public extension Loggable where Self ==  Logger {
+    /// A default logger instance with logging enabled for the default level and above.
+    ///
+    /// This static property provides a convenient way to access a default logger configuration, where logs at the default level and higher are enabled.
+    ///
+    /// ```swift
+    /// let logger = Logger.default
+    /// logger.log("Application started", level: .info, component: "AppLifecycle")
+    /// ```
+    static var `default`: Self {
+        .init { $0 >= .default }
+    }
 }
 
 /// A global actor that provides isolated access to logging operations, ensuring thread safety across concurrency domains.

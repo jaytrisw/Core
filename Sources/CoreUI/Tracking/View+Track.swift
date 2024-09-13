@@ -21,8 +21,8 @@ public extension View {
     /// }
     /// ```
     func track(
-        _ event: EventRepresentable,
-        properties: PropertyRepresentable...) -> some View {
+        _ event: Event,
+        properties: Property...) -> some View {
             modifier(TrackModifier(event: event, properties: properties))
         }
 
@@ -41,8 +41,8 @@ public extension View {
     ///     .track(Event(key: "purchase", value: "completed"), properties: properties)
     /// ```
     func track(
-        _ event: EventRepresentable,
-        properties: [PropertyRepresentable]) -> some View {
+        _ event: Event,
+        properties: [Property]) -> some View {
             modifier(TrackModifier(event: event, properties: properties))
         }
 
@@ -58,7 +58,7 @@ public extension View {
     ///     .track(Event(key: "login", value: "successful"))
     /// ```
     func track(
-        _ event: EventRepresentable) -> some View {
+        _ event: Event) -> some View {
             modifier(TrackModifier(event: event, properties: .none))
         }
 }
@@ -66,8 +66,8 @@ public extension View {
 @available(iOS 15.0, *)
 fileprivate struct TrackModifier: ViewModifier {
     @Environment(\.trackingWrapper) fileprivate var trackingWrapper
-    fileprivate let event: EventRepresentable
-    fileprivate let properties: [PropertyRepresentable]
+    fileprivate let event: Event
+    fileprivate let properties: [Property]
 
     /// Modifies the view to trigger tracking of the specified event and properties when the view appears.
     ///

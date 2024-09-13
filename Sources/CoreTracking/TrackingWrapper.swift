@@ -12,7 +12,7 @@ import Foundation
 /// - Version: 1.0
 public actor TrackingWrapper: Sendable {
     @TrackingWrapper.Actor private var trackers: [Trackable]
-    @TrackingWrapper.Actor private var globalProperties: [PropertyRepresentable] = []
+    @TrackingWrapper.Actor private var globalProperties: [Property] = []
 
     /// Initializes a new `TrackingWrapper` with the specified array of trackers.
     ///
@@ -43,8 +43,8 @@ public actor TrackingWrapper: Sendable {
         }
 
     @globalActor
-    fileprivate actor Actor: GlobalActor {
-        fileprivate static let shared: Actor = .init()
+    public actor Actor: GlobalActor {
+        public static let shared: Actor = .init()
     }
 }
 
@@ -65,10 +65,14 @@ extension TrackingWrapper: Trackable {
     /// wrapper.track(event, properties: [property])
     /// ```
     nonisolated public func track(
-        _ event: EventRepresentable,
-        properties: [PropertyRepresentable]) {
+        _ event: Event,
+        properties: [Property]) {
             Task { @TrackingWrapper.Actor in
-                trackers.forEach { $0.track(event, properties: globalProperties.merging(\.key, properties)) }
+                trackers
+                    .forEach { $0.track(
+                        event,
+                        properties: globalProperties.merging(\.key, properties).merging(\.key, event.properties))
+                    }
             }
         }
 }
@@ -104,7 +108,7 @@ extension TrackingWrapper: TrackingWrapping {
     /// wrapper.set(property)
     /// ```
     nonisolated public func set(
-        _ property: PropertyRepresentable) {
+        _ property: Property) {
             Task { @TrackingWrapper.Actor in
                 globalProperties.append(property)
             }
@@ -121,7 +125,7 @@ extension TrackingWrapper: TrackingWrapping {
     /// wrapper.remove(property)
     /// ```
     nonisolated public func remove(
-        _ property: PropertyRepresentable) {
+        _ property: Property) {
             Task { @TrackingWrapper.Actor in
                 globalProperties.removeAll(where: { $0.key == property.key })
             }

@@ -1,5 +1,4 @@
 // swift-tools-version: 6.0
-// The swift-tools-version declares the minimum version of Swift required to build this package.
 
 import PackageDescription
 
@@ -20,8 +19,11 @@ let package = Package(
             name: "CoreLogging",
             targets: ["CoreLogging"]),
         .library(
+            name: "CoreTesting",
+            targets: ["CoreTesting"]),
+        .library(
             name: "CoreTracking",
-            targets: ["CoreTracking"]),
+            targets: ["CoreTracking", "CoreTrackingMocks"]),
         .library(
             name: "CoreUI",
             targets: ["CoreUI"])
@@ -37,9 +39,25 @@ let package = Package(
             ],
             swiftSettings: swiftSettings),
         .target(
+            name: "CoreTesting",
+            dependencies: [
+                "Core"
+            ],
+            swiftSettings: swiftSettings,
+            linkerSettings: [
+                .linkedFramework("XCTest")
+            ]),
+        .target(
             name: "CoreTracking",
             dependencies: [
                 "Core"
+            ],
+            swiftSettings: swiftSettings),
+        .target(
+            name: "CoreTrackingMocks",
+            dependencies: [
+                "Core",
+                "CoreTracking"
             ],
             swiftSettings: swiftSettings),
         .target(
@@ -51,7 +69,20 @@ let package = Package(
             swiftSettings: swiftSettings),
         .testTarget(
             name: "CoreTests",
-            dependencies: ["Core"]
+            dependencies: [
+                "Core",
+                "CoreTesting"
+            ]
+        ),
+        .testTarget(
+            name: "CoreTrackingTests",
+            dependencies: [
+                "Core",
+                "CoreTesting",
+                "CoreTracking",
+                "CoreTrackingMocks"
+            ]
         )
-    ]
+    ],
+    swiftLanguageModes: [.v6]
 )

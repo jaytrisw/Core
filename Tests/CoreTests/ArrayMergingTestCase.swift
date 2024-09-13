@@ -1,4 +1,5 @@
 import XCTest
+import CoreTesting
 @testable import Core
 
 final class ArrayMergingTestCase: XCTestCase {
@@ -12,6 +13,13 @@ final class ArrayMergingTestCase: XCTestCase {
             .merging(\.self, second)
 
         // Then
-        XCTAssertEqual(result.sorted(), [1, 2, 3, 4, 5])
+        assert(on: result) {
+            equal(\.count, 5)
+            contains(\.self, 1)
+            contains(\.self, 2)
+            contains(\.self, 3)
+            contains(\.self, 4)
+            contains(\.self, 5)
+        }
     }
 }
