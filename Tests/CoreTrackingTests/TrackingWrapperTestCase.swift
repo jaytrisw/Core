@@ -1,5 +1,3 @@
-import XCTest
-import Core
 import CoreTesting
 import CoreTrackingMocks
 @testable import CoreTracking
@@ -73,6 +71,28 @@ extension TrackingWrapperTestCase {
                         equal(\.count, 1)
                         contains(in: \.self, property)
                     }
+                }
+            }
+    }
+
+    func testTrack_whenCustomEvent_shouldCallTracker() async {
+        // Given
+        let expectation = expectation(description: #function)
+        let event: TestEvent = .mock()
+        await trackerMock.set(expectation.fulfill)
+
+        // When
+        sut.track(event)
+
+        // Then
+        await assert(
+            on: await trackerMock.tracked,
+            waitingFor: expectation,
+            with: .timeout) {
+                equal(\.count, 1)
+                unwrap(\.first) {
+                    equal(\.event.name, event.name)
+                    equal(\.properties.count, .zero)
                 }
             }
     }
@@ -230,6 +250,32 @@ extension TrackingWrapperTestCase {
                 }
             }
     }
+
+    func testTrack_whenCustomEventAndProperty_shouldCallTracker() async {
+        // Given
+        let expectation = expectation(description: #function)
+        let event: TestEvent = .mock()
+        let property: TestProperty = .mock()
+        await trackerMock.set(expectation.fulfill)
+
+        // When
+        sut.track(event, properties: property)
+
+        // Then
+        await assert(
+            on: await trackerMock.tracked,
+            waitingFor: expectation,
+            with: .timeout) {
+                equal(\.count, 1)
+                unwrap(\.first) {
+                    equal(\.event.name, event.name)
+                    cast(\.properties, element: TestProperty.self) {
+                        equal(\.count, 1)
+                        equal(\.first, property)
+                    }
+                }
+            }
+    }
 }
 
 // MARK: - set(_:)
@@ -274,5 +320,30 @@ extension TrackingWrapperTestCase {
             on: await sut.globalProperties) {
                 equal(\.count, 0)
             }
+    }
+}
+
+private enum TestEvent: EventRepresentable, Equatable {
+    case mock(_ string: String = .uuid)
+
+    var name: String {
+        switch self {
+            case let .mock(string): string
+        }
+    }
+}
+private enum TestProperty: PropertyRepresentable, Equatable {
+    case mock(_ key: String = .uuid, _ value: PropertyValue = .string(.uuid))
+
+    var key: String {
+        switch self {
+            case let .mock(string, _): string
+        }
+    }
+
+    var value: PropertyValue {
+        switch self {
+            case let .mock(_, value): value
+        }
     }
 }
