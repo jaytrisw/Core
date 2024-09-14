@@ -11,8 +11,8 @@ import Foundation
 ///
 /// - Version: 1.0
 public actor TrackingWrapper: Sendable {
-    @TrackingWrapper.Actor private var trackers: [Trackable]
-    @TrackingWrapper.Actor private var globalProperties: [Property] = []
+    @TrackingWrapper.Actor private(set) var trackers: [Trackable] = []
+    @TrackingWrapper.Actor private(set) var globalProperties: [Property] = []
 
     /// Initializes a new `TrackingWrapper` with the specified array of trackers.
     ///
@@ -25,7 +25,9 @@ public actor TrackingWrapper: Sendable {
     /// ```
     public init(
         _ trackers: [Trackable] = []) {
-            self.trackers = trackers
+            trackers.forEach { [weak self] in
+                self?.add($0)
+            }
         }
 
     /// Initializes a new `TrackingWrapper` with the specified variadic list of trackers.
