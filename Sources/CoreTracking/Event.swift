@@ -17,3 +17,6 @@ public struct Event: Sendable {
             self.init(name, properties: properties.map(\.self))
         }
 }
+
+extension Event: Equatable {}
+extension Event: Hashable {}

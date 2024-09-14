@@ -1,6 +1,6 @@
 import Foundation
 
-public indirect enum PropertyValue: Equatable, Sendable {
+public indirect enum PropertyValue: Sendable {
     case string(_ string: String)
     case integer(_ integer: Int)
     case double(_ double: Double)
@@ -10,3 +10,6 @@ public indirect enum PropertyValue: Equatable, Sendable {
     case array(_ array: [PropertyValue])
     case dictionary(_ dictionary: [String: PropertyValue])
 }
+
+extension PropertyValue: Equatable {}
+extension PropertyValue: Hashable {}

@@ -15,11 +15,11 @@ final class ArrayMergingTestCase: XCTestCase {
         // Then
         assert(on: result) {
             equal(\.count, 5)
-            contains(\.self, 1)
-            contains(\.self, 2)
-            contains(\.self, 3)
-            contains(\.self, 4)
-            contains(\.self, 5)
+            contains(in: \.self, 1)
+            contains(in: \.self, 2)
+            contains(in: \.self, 3)
+            contains(in: \.self, 4)
+            contains(in: \.self, 5)
         }
     }
 }

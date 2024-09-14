@@ -12,3 +12,6 @@ public struct Property: PropertyRepresentable {
             self.value = value
         }
 }
+
+extension Property: Equatable {}
+extension Property: Hashable {}
