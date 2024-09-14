@@ -1,51 +1,59 @@
 import Foundation
 
-/// An actor that coordinates multiple trackers and manages global properties for event tracking.
+/// An actor that manages multiple trackers and global properties for event tracking, coordinating calls to the `Trackable` interface.
 ///
-/// The `TrackingWrapper` actor implements both `Trackable` and `TrackingWrapping`, allowing it to manage multiple trackers and maintain global properties that are automatically included in all tracking events. The actor ensures thread-safe access to trackers and properties by using a dedicated global actor context.
+/// `TrackingWrapper` provides a centralized way to manage multiple `Trackable` instances, allowing you to add or remove trackers and set global properties that are applied to all tracked events. This actor ensures thread-safe access and modification of trackers and properties, making it ideal for use in concurrent environments.
 ///
-/// ### Conformance
-/// - `Sendable`: Ensures that `TrackingWrapper` can be safely used across concurrency domains.
-/// - `Trackable`: Allows `TrackingWrapper` to coordinate event tracking by forwarding calls to all retained trackers.
-/// - `TrackingWrapping`: Provides methods to add trackers and manage global properties used in tracking.
+/// The actor is isolated by a custom global actor (`TrackingWrapper.Actor`), ensuring that all tracking operations are handled in a consistent and safe manner.
+///
+/// ### Usage
+/// Use `TrackingWrapper` to manage event tracking across multiple trackers, with the ability to set global properties that are automatically included in every tracking call.
 ///
 /// - Version: 1.0
 public actor TrackingWrapper: Sendable {
+
+    /// The list of trackers managed by the `TrackingWrapper`.
+    ///
+    /// Trackers can be added or removed dynamically, and all trackers will receive the events sent through the `track` method.
     @TrackingWrapper.Actor private(set) var trackers: [Trackable] = []
+
+    /// A list of global properties that are added to every event tracked by the `TrackingWrapper`.
+    ///
+    /// Global properties can be set or removed, allowing you to manage shared data that should be included in all tracked events.
     @TrackingWrapper.Actor private(set) var globalProperties: [Property] = []
 
-    /// Initializes a new `TrackingWrapper` with the specified array of trackers.
+    /// Initializes a new `TrackingWrapper` with an optional list of trackers.
     ///
-    /// - Parameter trackers: An array of `Trackable` instances to be managed by the wrapper. Defaults to an empty array.
+    /// - Parameter trackers: An array of `Trackable` instances to be managed by the wrapper.
     ///
     /// ```swift
     /// let tracker1 = MyTracker()
-    /// let tracker2 = MyOtherTracker()
-    /// let wrapper = TrackingWrapper([tracker1, tracker2])
+    /// let tracker2 = AnotherTracker()
+    /// let trackingWrapper = TrackingWrapper([tracker1, tracker2])
     /// ```
-    public init(
-        _ trackers: [Trackable] = []) {
-            trackers.forEach { [weak self] in
-                self?.add($0)
-            }
+    public init(_ trackers: [Trackable] = []) {
+        trackers.forEach { [weak self] in
+            self?.add($0)
         }
+    }
 
-    /// Initializes a new `TrackingWrapper` with the specified variadic list of trackers.
+    /// Initializes a new `TrackingWrapper` with variadic trackers.
     ///
     /// - Parameter trackers: A variadic list of `Trackable` instances to be managed by the wrapper.
     ///
     /// ```swift
     /// let tracker1 = MyTracker()
-    /// let tracker2 = MyOtherTracker()
-    /// let wrapper = TrackingWrapper(tracker1, tracker2)
+    /// let tracker2 = AnotherTracker()
+    /// let trackingWrapper = TrackingWrapper(tracker1, tracker2)
     /// ```
-    public init(
-        _ trackers: Trackable...) {
-            self.init(trackers.map(\.self))
-        }
+    public init(_ trackers: Trackable...) {
+        self.init(trackers.map(\.self))
+    }
 
+    /// A global actor used to ensure thread-safe access to the `TrackingWrapper`'s trackers and properties.
     @globalActor
     public actor Actor: GlobalActor {
+        /// The shared instance of the `TrackingWrapper.Actor`.
         public static let shared: Actor = .init()
     }
 }
@@ -53,28 +61,32 @@ public actor TrackingWrapper: Sendable {
 // MARK: - Trackable
 
 extension TrackingWrapper: Trackable {
-    /// Tracks a given event with the specified properties, forwarding the call to all retained trackers.
+    /// Tracks an event using all managed trackers, applying global properties and event-specific properties.
     ///
-    /// This method asynchronously tracks the event by merging the global properties managed by `TrackingWrapper` with the provided properties, and then forwards the tracking call to all retained trackers.
+    /// This method asynchronously sends the event to all trackers managed by the `TrackingWrapper`. The global properties and event properties are merged and included with each tracked event.
     ///
     /// - Parameters:
-    ///   - event: The event to be tracked, conforming to `EventRepresentable`.
-    ///   - properties: An array of properties associated with the event.
+    ///   - event: The event to be tracked.
+    ///   - properties: Additional properties specific to the event.
     ///
     /// ```swift
-    /// let event = Event(key: "purchase", value: "completed")
-    /// let property = Property(key: "price", value: "$10")
-    /// wrapper.track(event, properties: [property])
+    /// trackingWrapper.track(
+    ///     Event(name: "Purchase"),
+    ///     properties: [Property("item", value: "book")]
+    /// )
     /// ```
     nonisolated public func track(
         _ event: Event,
         properties: [Property]) {
             Task { @TrackingWrapper.Actor in
-                trackers
-                    .forEach { $0.track(
+                trackers.forEach {
+                    $0.track(
                         event,
-                        properties: globalProperties.merging(\.key, properties).merging(\.key, event.properties))
-                    }
+                        properties: globalProperties
+                            .merging(\.key, properties)
+                            .merging(\.key, event.properties)
+                    )
+                }
             }
         }
 }
@@ -82,15 +94,14 @@ extension TrackingWrapper: Trackable {
 // MARK: - TrackerWrapping
 
 extension TrackingWrapper: TrackingWrapping {
-    /// Adds a tracker to be managed by the `TrackingWrapper`.
+    /// Adds a tracker to the `TrackingWrapper`.
     ///
-    /// This method asynchronously adds a `Trackable` tracker to the internal list, allowing it to receive event tracking calls.
+    /// Trackers added through this method will start receiving events tracked by the wrapper.
     ///
-    /// - Parameter tracker: The tracker to be added, conforming to `Trackable`.
+    /// - Parameter tracker: The tracker to be added.
     ///
     /// ```swift
-    /// let tracker = MyTracker()
-    /// wrapper.add(tracker)
+    /// trackingWrapper.add(MyTracker())
     /// ```
     nonisolated public func add(
         _ tracker: Trackable) {
@@ -99,15 +110,14 @@ extension TrackingWrapper: TrackingWrapping {
             }
         }
 
-    /// Sets a global property to be included in all tracked events.
+    /// Sets a global property to be included with all tracked events.
     ///
-    /// This method asynchronously adds a global property that will be merged with event-specific properties for every tracking call.
+    /// Global properties can be used to include shared data, such as user or session information, that should be part of every tracked event.
     ///
-    /// - Parameter property: The property to be added, conforming to `PropertyRepresentable`.
+    /// - Parameter property: The property to be set.
     ///
     /// ```swift
-    /// let property = Property(key: "userId", value: "12345")
-    /// wrapper.set(property)
+    /// trackingWrapper.set(Property("userId", value: "12345"))
     /// ```
     nonisolated public func set(
         _ property: Property) {
@@ -116,15 +126,14 @@ extension TrackingWrapper: TrackingWrapping {
             }
         }
 
-    /// Removes a global property from being included in tracked events.
+    /// Removes a global property, preventing it from being included in future tracked events.
     ///
-    /// This method asynchronously removes a previously set global property, stopping it from being included in future event tracking calls.
+    /// This method removes the global property that matches the provided key, ensuring that it is no longer sent with tracked events.
     ///
-    /// - Parameter property: The property to be removed, conforming to `PropertyRepresentable`.
+    /// - Parameter property: The property to be removed.
     ///
     /// ```swift
-    /// let property = Property(key: "userId", value: "12345")
-    /// wrapper.remove(property)
+    /// trackingWrapper.remove(Property("userId", value: "12345"))
     /// ```
     nonisolated public func remove(
         _ property: Property) {

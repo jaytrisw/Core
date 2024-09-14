@@ -1,13 +1,14 @@
 import Foundation
 
 public extension Array where Element == Property {
-    /// A static property representing an empty array of `Property`.
+
+    /// An empty array of `Property` elements.
     ///
-    /// Use this property as a shorthand for initializing an empty array of properties. It can be particularly useful when setting default values for properties in event tracking or other related contexts.
+    /// This property provides a more readable alternative to using an empty array literal (`[]`), enhancing code clarity, especially in contexts where the absence of properties needs to be explicitly stated.
     ///
     /// ```swift
-    /// let properties: [Property] = .none
-    /// print(properties) // Output: []
+    /// let emptyProperties: [Property] = .none
+    /// let event = Event("UserLogin", properties: .none) // Creates an event with no properties
     /// ```
     static var none: Self { .init() }
 }

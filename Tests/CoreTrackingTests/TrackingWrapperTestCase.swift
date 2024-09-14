@@ -54,7 +54,7 @@ extension TrackingWrapperTestCase {
         // Given
         let expectation = expectation(description: #function)
         let eventName: String = .uuid
-        let property: Property = .init(key: .uuid, value: .uuid)
+        let property: Property = .init(.uuid, value: .uuid)
         let event: Event = .init(eventName, properties: property)
         await trackerMock.set(expectation.fulfill)
 
@@ -84,7 +84,7 @@ extension TrackingWrapperTestCase {
         let expectation = expectation(description: #function)
         let eventName: String = .uuid
         let event: Event = .init(eventName)
-        let property: Property = .init(key: .uuid, value: .uuid)
+        let property: Property = .init(.uuid, value: .uuid)
         await trackerMock.set(expectation.fulfill)
 
         // When
@@ -108,9 +108,9 @@ extension TrackingWrapperTestCase {
         // Given
         let expectation = expectation(description: #function)
         let eventName: String = .uuid
-        let eventProperty: Property = .init(key: .uuid, value: .uuid)
+        let eventProperty: Property = .init(.uuid, value: .uuid)
         let event: Event = .init(eventName, properties: eventProperty)
-        let trackerProperty: Property = .init(key: .uuid, value: .uuid)
+        let trackerProperty: Property = .init(.uuid, value: .uuid)
         await trackerMock.set(expectation.fulfill)
 
         // When
@@ -137,9 +137,9 @@ extension TrackingWrapperTestCase {
         let eventName: String = .uuid
         let propertyKey: String = .uuid
         let propertyValue: String = .uuid
-        let eventProperty: Property = .init(key: propertyKey, value: propertyValue)
+        let eventProperty: Property = .init(propertyKey, value: propertyValue)
         let event: Event = .init(eventName, properties: eventProperty)
-        let trackerProperty: Property = .init(key: propertyKey, value: .uuid)
+        let trackerProperty: Property = .init(propertyKey, value: .uuid)
         await trackerMock.set(expectation.fulfill)
 
         // When
@@ -168,9 +168,9 @@ extension TrackingWrapperTestCase {
         let eventName: String = .uuid
         let propertyKey: String = .uuid
         let propertyValue: String = .uuid
-        let eventProperty: Property = .init(key: propertyKey, value: propertyValue)
-        let trackerProperty: Property = .init(key: propertyKey, value: .uuid)
-        let globalProperty: Property = .init(key: propertyKey, value: .uuid)
+        let eventProperty: Property = .init(propertyKey, value: propertyValue)
+        let trackerProperty: Property = .init(propertyKey, value: .uuid)
+        let globalProperty: Property = .init(propertyKey, value: .uuid)
         let event: Event = .init(eventName, properties: eventProperty)
         sut.set(globalProperty)
         await trackerMock.set(expectation.fulfill)
@@ -201,8 +201,8 @@ extension TrackingWrapperTestCase {
         let eventName: String = .uuid
         let propertyKey: String = .uuid
         let propertyValue: String = .uuid
-        let trackerProperty: Property = .init(key: propertyKey, value: propertyValue)
-        let globalProperty: Property = .init(key: propertyKey, value: .uuid)
+        let trackerProperty: Property = .init(propertyKey, value: propertyValue)
+        let globalProperty: Property = .init(propertyKey, value: .uuid)
         let event: Event = .init(eventName)
         sut.set(globalProperty)
         await trackerMock.set(expectation.fulfill)
@@ -235,7 +235,7 @@ extension TrackingWrapperTestCase {
         // Given
         let propertyKey: String = .uuid
         let propertyValue: String = .uuid
-        let property: Property = .init(key: propertyKey, value: propertyValue)
+        let property: Property = .init(propertyKey, value: propertyValue)
 
         // When
         sut.set(property)
@@ -259,7 +259,7 @@ extension TrackingWrapperTestCase {
         // Given
         let propertyKey: String = .uuid
         let propertyValue: String = .uuid
-        let property: Property = .init(key: propertyKey, value: propertyValue)
+        let property: Property = .init(propertyKey, value: propertyValue)
         sut.set(property)
 
         // When
