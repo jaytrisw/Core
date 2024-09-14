@@ -1,6 +1,6 @@
 import Foundation
 
-public indirect enum PropertyValue: PropertyValueType {
+public indirect enum PropertyValue: Equatable, Sendable {
     case string(_ string: String)
     case integer(_ integer: Int)
     case double(_ double: Double)

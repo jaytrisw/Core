@@ -160,7 +160,7 @@ extension TrackingWrapperTestCase {
                     equal(\.properties.count, 1)
                     unwrap(\.properties.first) {
                         equal(\.key, propertyKey)
-                        equal(\.value, propertyValue)
+                        equal(\.value, .string(propertyValue))
                     }
                 }
             }
@@ -193,7 +193,7 @@ extension TrackingWrapperTestCase {
                     equal(\.properties.count, 1)
                     unwrap(\.properties.first) {
                         equal(\.key, propertyKey)
-                        equal(\.value, propertyValue)
+                        equal(\.value, .string(propertyValue))
                     }
                 }
             }
@@ -225,7 +225,7 @@ extension TrackingWrapperTestCase {
                     equal(\.properties.count, 1)
                     unwrap(\.properties.first) {
                         equal(\.key, propertyKey)
-                        equal(\.value, propertyValue)
+                        equal(\.value, .string(propertyValue))
                     }
                 }
             }
@@ -250,7 +250,7 @@ extension TrackingWrapperTestCase {
                 equal(\.count, 1)
                 unwrap(\.first) {
                     equal(\.key, propertyKey)
-                    equal(\.value, propertyValue)
+                    equal(\.value, .string(propertyValue))
                 }
             }
     }
