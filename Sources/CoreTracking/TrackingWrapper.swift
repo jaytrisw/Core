@@ -24,7 +24,7 @@ public actor TrackingWrapper: Sendable {
 
 extension TrackingWrapper: Trackable {
     nonisolated public func track(
-        _ event: Event,
+        _ event: EventRepresentable,
         properties: [PropertyRepresentable]) {
             Task { @TrackingWrapper.Actor in
                 trackers.forEach {
@@ -32,7 +32,6 @@ extension TrackingWrapper: Trackable {
                         event,
                         properties: globalProperties
                             .merging(\.key, properties)
-                            .merging(\.key, event.properties)
                     )
                 }
             }

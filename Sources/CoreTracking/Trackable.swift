@@ -2,6 +2,6 @@ import Foundation
 
 public protocol Trackable: Sendable {
     nonisolated func track(
-        _ event: Event,
+        _ event: EventRepresentable,
         properties: [PropertyRepresentable])
 }
