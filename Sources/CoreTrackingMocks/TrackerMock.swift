@@ -8,7 +8,7 @@ public actor TrackerMock: Sendable {
 }
 
 extension TrackerMock: Trackable {
-    nonisolated public func track(_ event: Event, properties: [Property]) {
+    nonisolated public func track(_ event: Event, properties: [PropertyRepresentable]) {
         Task {
             await append(.init(event: event, properties: properties))
             await onTracked?()
@@ -23,7 +23,7 @@ public extension TrackerMock {
 
     struct Tracked: Sendable {
         public let event: Event
-        public let properties: [Property]
+        public let properties: [PropertyRepresentable]
     }
 }
 

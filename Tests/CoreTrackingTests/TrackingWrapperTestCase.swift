@@ -70,7 +70,8 @@ extension TrackingWrapperTestCase {
                 unwrap(\.first) {
                     equal(\.event.name, eventName)
                     equal(\.properties.count, 1)
-                    contains(\.properties, property)
+                    contains(\.properties, \.key) { $0 == property.key }
+                    contains(\.properties, \.value) { $0 == property.value }
                 }
             }
     }
@@ -99,7 +100,8 @@ extension TrackingWrapperTestCase {
                 unwrap(\.first) {
                     equal(\.event.name, eventName)
                     equal(\.properties.count, 1)
-                    contains(\.properties, property)
+                    contains(\.properties, \.key) { $0 == property.key }
+                    contains(\.properties, \.value) { $0 == property.value }
                 }
             }
     }
@@ -125,8 +127,10 @@ extension TrackingWrapperTestCase {
                 unwrap(\.first) {
                     equal(\.event.name, eventName)
                     equal(\.properties.count, 2)
-                    contains(\.properties, trackerProperty)
-                    contains(\.properties, eventProperty)
+                    contains(\.properties, \.key) { $0 == trackerProperty.key }
+                    contains(\.properties, \.value) { $0 == trackerProperty.value }
+                    contains(\.properties, \.key) { $0 == eventProperty.key }
+                    contains(\.properties, \.value) { $0 == eventProperty.value }
                 }
             }
     }

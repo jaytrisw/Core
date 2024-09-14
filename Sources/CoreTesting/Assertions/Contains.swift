@@ -42,3 +42,14 @@ public func contains<Instance, Value: Equatable>(
             XCTAssertEqual(instance[keyPath: keyPath].contains(constant), true, file: file, line: line)
         }
     }
+
+public func contains<Instance, Value, Property: Equatable>(
+    _ keyPath: KeyPath<Instance, [Value]>,
+    _ property: KeyPath<Value, Property>,
+    file: StaticString = #filePath,
+    line: UInt = #line,
+    where evaluation: @escaping (Property) -> Bool) -> Assertion<Instance> {
+        .init { instance, _, _ in
+            XCTAssertEqual(instance[keyPath: keyPath].contains(where: { evaluation($0[keyPath: property]) }), true, file: file, line: line)
+        }
+    }
