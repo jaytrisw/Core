@@ -27,15 +27,29 @@ extension TrackingWrapper: Trackable {
         _ event: EventRepresentable,
         properties: [PropertyRepresentable]) {
             Task { @TrackingWrapper.Actor in
+                let properties = aggregateProperties(event, properties)
                 trackers.forEach {
-                    $0.track(
-                        event,
-                        properties: globalProperties
-                            .merging(\.key, properties)
-                    )
+                    $0.track(event, properties: properties)
                 }
             }
         }
+
+    @TrackingWrapper.Actor
+    func aggregateProperties(
+        _ event: EventRepresentable,
+        _ properties: [PropertyRepresentable]) -> [PropertyRepresentable] {
+            globalProperties.merging(\.key, properties).merging(\.key, event.aggregateProperties)
+    }
+}
+
+extension EventRepresentable {
+    var aggregateProperties: [PropertyRepresentable] {
+        guard let event = self as? Event else {
+            return []
+        }
+        return event.properties
+
+    }
 }
 
 // MARK: - TrackerWrapping
