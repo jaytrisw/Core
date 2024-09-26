@@ -119,6 +119,6 @@ public extension Loggable where Self ==  Logger {
 ///
 /// - Version: 1.0
 @globalActor
-public actor LoggerActor: GlobalActor {
+public actor LoggerActor {
     public static let shared: LoggerActor = .init()
 }

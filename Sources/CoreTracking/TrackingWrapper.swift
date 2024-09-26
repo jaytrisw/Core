@@ -15,7 +15,7 @@ public actor TrackingWrapper: Sendable {
     }
 
     @globalActor
-    public actor Actor: GlobalActor {
+    public actor Actor {
         public static let shared: Actor = .init()
     }
 }

@@ -12,7 +12,7 @@ public actor MixpanelTracker {
         instance.people.set(property: "email", to: "ghj")
     }
 
-    @globalActor actor Actor: GlobalActor {
+    @globalActor actor Actor {
         static var shared: Actor = .init()
     }
 }
