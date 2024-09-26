@@ -27,7 +27,7 @@ let package = Package(
     targets: [
         .target(name: "Core", swiftSettings: swiftSettings),
         .target(name: "CoreLogging", dependencies: ["Core"], swiftSettings: swiftSettings),
-        .target(name: "CoreTesting", dependencies: ["Core"], swiftSettings: swiftSettings, linkerSettings: [.linkedFramework("XCTest")]),
+        .target(name: "CoreTesting", dependencies: ["Core"], swiftSettings: swiftSettings),
         .target(name: "CoreTracking", dependencies: ["Core"], swiftSettings: swiftSettings),
         .target(name: "CoreTrackingMocks", dependencies: ["Core", "CoreTracking"], swiftSettings: swiftSettings),
         .target(name: "CoreUI", dependencies: ["Core", "CoreTracking"], swiftSettings: swiftSettings),

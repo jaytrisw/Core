@@ -1,4 +1,5 @@
 import CoreTesting
+import XCTest
 @testable import CoreTracking
 
 final class PropertyTestCase: XCTestCase {}
