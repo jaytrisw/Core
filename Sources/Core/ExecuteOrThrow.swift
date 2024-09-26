@@ -22,7 +22,7 @@ import Foundation
 /// ```
 /// - Version: 1.0
 public func execute<T>(
-    _ tryHandler: () throws -> T,
+    _ tryHandler: @autoclosure () throws -> T,
     orThrow errorHandler: (Error) -> Error) rethrows -> T {
         do {
             return try tryHandler()
