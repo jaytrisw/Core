@@ -5,7 +5,8 @@ import Foundation
 /// The `Key` struct is designed to represent keys as strings.
 ///
 /// - Version: 1.0
-@frozen public struct Key {
+@frozen
+public struct Key {
 
     /// The string value representing the key.
     public let value: String

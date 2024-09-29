@@ -83,7 +83,7 @@ extension PropertyTestCase {
     func testInitialization_whenValueUrl() throws {
         // Given
         let key: String = .uuid
-        let value: URL = try .init(string: "http://www.github.com").unwrap()
+        let value: URL = .init(string: "http://www.github.com").unwrap()
 
         // When
         let result = Property(key, value: value)

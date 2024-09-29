@@ -11,14 +11,14 @@ import Foundation
 /// - Throws: The custom error provided by the `errorHandler` if the `returnHandler` throws an error.
 ///
 /// ```swift
-/// func riskyOperation() throws -> Int {
+/// func operation() throws -> Int {
 ///     throw MyError()
 /// }
 ///
-/// let result = try execute(riskyOperation) { error in
+/// let result = try execute(operation) { error in
 ///     return AnotherError()
 /// }
-/// // Will throw AnotherError if riskyOperation fails
+/// // Will throw AnotherError if operation fails
 /// ```
 /// - Version: 1.0
 public func execute<T>(
@@ -30,4 +30,3 @@ public func execute<T>(
             throw errorHandler(error)
         }
     }
-

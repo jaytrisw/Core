@@ -10,7 +10,6 @@ public extension Publishers {
     ///   - Other: The type of the additional value.
     ///   - Output: The type of the publisher's output.
     ///
-    /// ### Example:
     /// ```swift
     /// let publisher = Just(42)
     /// let otherValue = "Context"
