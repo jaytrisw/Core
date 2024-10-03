@@ -14,6 +14,7 @@ let package = Package(
     products: [
         .library(name: "Core", targets: ["Core"]),
         .library(name: "CoreLogging", targets: ["CoreLogging"]),
+        .library(name: "CoreNetworking", targets: ["CoreNetworking"]),
         .library(name: "CoreTesting", targets: ["CoreTesting"]),
         .library(name: "CoreTracking", targets: ["CoreTracking", "CoreTrackingMocks"]),
         .library(name: "CoreUI", targets: ["CoreUI"]),
@@ -27,6 +28,7 @@ let package = Package(
     targets: [
         .target(name: "Core", swiftSettings: swiftSettings),
         .target(name: "CoreLogging", dependencies: ["Core"], swiftSettings: swiftSettings),
+        .target(name: "CoreNetworking", dependencies: ["Core", "CoreLogging"], swiftSettings: swiftSettings),
         .target(name: "CoreTesting", dependencies: ["Core"], swiftSettings: swiftSettings),
         .target(name: "CoreTracking", dependencies: ["Core"], swiftSettings: swiftSettings),
         .target(name: "CoreTrackingMocks", dependencies: ["Core", "CoreTracking"], swiftSettings: swiftSettings),
