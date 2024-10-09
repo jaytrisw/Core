@@ -1,4 +1,6 @@
+#if canImport(XCTest)
 import XCTest
+
 
 /// Creates an assertion that validates whether a property's value on an instance is not equal to a specified constant.
 ///
@@ -86,3 +88,4 @@ public func notEqual<Instance, Value: Equatable>(
             XCTAssertNotEqual(instance[keyPath: keyPath], constant, file: file, line: line)
         }
     }
+#endif

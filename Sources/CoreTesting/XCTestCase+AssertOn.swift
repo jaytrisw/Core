@@ -1,3 +1,4 @@
+#if canImport(XCTest)
 import XCTest
 
 public extension XCTestCase {
@@ -164,3 +165,4 @@ public extension XCTestCase {
             assertions().assert(on: instance, file: file, line: line)
         }
 }
+#endif

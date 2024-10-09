@@ -1,4 +1,6 @@
+#if canImport(XCTest)
 import XCTest
+
 
 /// Creates an assertion that validates whether an array property of an instance contains a specified value.
 ///
@@ -123,3 +125,4 @@ public func contains<Instance, Value, Property: Equatable>(
             XCTAssertEqual(instance[keyPath: keyPath].contains(where: { evaluation($0[keyPath: property]) }), true, file: file, line: line)
         }
     }
+#endif

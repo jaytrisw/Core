@@ -1,4 +1,6 @@
+#if canImport(XCTest)
 import XCTest
+
 
 /// Creates an assertion that validates whether a property of an instance can be cast to a specified type and then performs additional assertions on the casted property.
 ///
@@ -119,3 +121,5 @@ public func cast<Instance, Value: Collection, Property>(
             assertions().assert(on: instance[keyPath: keyPath].compactMap { $0 as? Property })
         }
     }
+#endif
+

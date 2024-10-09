@@ -1,4 +1,6 @@
+#if canImport(XCTest)
 import XCTest
+
 
 /// Creates an assertion that unwraps an optional property on an instance and evaluates additional assertions on the unwrapped value.
 ///
@@ -123,7 +125,9 @@ public func some<Instance, Value>(
     _ keyPath: KeyPath<Instance, Value?>,
     file: StaticString = #filePath,
     line: UInt = #line) -> Assertion<Instance> {
-    .init { instance, _, _ in
-        XCTAssertNotNil(instance[keyPath: keyPath], file: file, line: line)
+        .init { instance, _, _ in
+            XCTAssertNotNil(instance[keyPath: keyPath], file: file, line: line)
+        }
     }
-}
+#endif
+
