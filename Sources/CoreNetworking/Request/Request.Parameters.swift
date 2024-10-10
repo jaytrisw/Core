@@ -9,7 +9,7 @@ public extension Request {
         public let key: String
         public let value: AnyHashable
 
-        init<Value>(key: String, value: Value) where Value: Hashable, Value: Sendable {
+        init<Value>(key: String, value: Value) where Value: Hashable {
             self.key = key
             self.value = .init(value)
         }
@@ -30,14 +30,17 @@ public extension Request {
             self.init(key: key, value: value)
         }
 
+        @_disfavoredOverload
         public init<T>(_ key: String, _ value: Dictionary<String, T>) where T: CustomStringConvertible {
             self.init(key: key, value: value.mapValues(\.description))
         }
 
+        @_disfavoredOverload
         public init<T>(_ key: String, _ value: Array<T>) where T: CustomStringConvertible {
             self.init(key: key, value: value.map(\.description))
         }
 
+        @_disfavoredOverload
         public init(_ key: String, _ value: CustomStringConvertible) {
             self.init(key: key, value: value.description)
         }
@@ -58,24 +61,33 @@ public extension Request {
             self.init(key: key, value: value)
         }
 
+        @_disfavoredOverload
         public init<T>(_ key: String, _ value: Dictionary<String, T>?) where T: CustomStringConvertible {
             self.init(key: key, value: value?.mapValues(\.description))
         }
 
+        @_disfavoredOverload
         public init<T>(_ key: String, _ value: Array<T>?) where T: CustomStringConvertible {
             self.init(key: key, value: value?.map(\.description))
         }
 
+        @_disfavoredOverload
         public init<T>(_ key: String, _ value: Dictionary<String, T?>) where T: CustomStringConvertible {
             self.init(key: key, value: value.compactMapValues { $0?.description })
         }
 
+        @_disfavoredOverload
         public init<T>(_ key: String, _ value: Array<T?>) where T: CustomStringConvertible {
             self.init(key: key, value: value.compactMap { $0?.description })
         }
 
+        @_disfavoredOverload
         public init(_ key: String, _ value: CustomStringConvertible?) {
             self.init(key: key, value: value?.description)
+        }
+
+        public init(_ key: String, _ value: Request.Parameters) {
+            self.init(key: key, value: value.compactMap { Request.Parameter(key: $0.key, value: $0.value) })
         }
     }
 }
