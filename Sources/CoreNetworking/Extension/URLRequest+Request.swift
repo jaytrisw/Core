@@ -33,7 +33,7 @@ extension URLRequest {
                             self.url = composedUrl
                         }
                     case .json:
-                        let parameters = Dictionary(uniqueKeysWithValues: parameters.flatMap { ($0.key, $0.value) })
+                        let parameters = parameters.toDictionary()
                         guard let jsonParameters = try? JSONSerialization
                                 .data(
                                     withJSONObject: parameters,
@@ -58,5 +58,17 @@ extension URLRequest {
 extension URLRequest {
     public mutating func setValue(mimeType: MIMEType, forHTTPHeaderField headerField: String) {
         self.setValue(mimeType.description, forHTTPHeaderField: headerField)
+    }
+}
+
+extension Request.Parameters {
+    func toDictionary() -> [String: AnyHashable] {
+        reduce(into: .init()) { dictionary, parameter in
+            if let array = parameter.value as? [Request.Parameter] {
+                dictionary[parameter.key] = array.toDictionary()
+                return
+            }
+            dictionary[parameter.key] = parameter.value
+        }
     }
 }

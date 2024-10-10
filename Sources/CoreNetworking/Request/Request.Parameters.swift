@@ -14,8 +14,32 @@ public extension Request {
             self.value = .init(value)
         }
 
-        public init<Value>(_ key: String, _ value: Value) where Value: Hashable, Value: Sendable {
+        public init(_ key: String, _ value: String) {
             self.init(key: key, value: value)
+        }
+
+        public init(_ key: String, _ value: Int) {
+            self.init(key: key, value: value)
+        }
+
+        public init(_ key: String, _ value: Double) {
+            self.init(key: key, value: value)
+        }
+
+        public init(_ key: String, _ value: Bool) {
+            self.init(key: key, value: value)
+        }
+
+        public init<T>(_ key: String, _ value: Dictionary<String, T>) where T: CustomStringConvertible {
+            self.init(key: key, value: value.mapValues(\.description))
+        }
+
+        public init<T>(_ key: String, _ value: Array<T>) where T: CustomStringConvertible {
+            self.init(key: key, value: value.map(\.description))
+        }
+
+        public init(_ key: String, _ value: CustomStringConvertible) {
+            self.init(key: key, value: value.description)
         }
     }
 }
