@@ -33,7 +33,7 @@ extension URLRequest {
                             self.url = composedUrl
                         }
                     case .json:
-                        let parameters = Dictionary(uniqueKeysWithValues: parameters.map { ($0.key, $0.value) })
+                        let parameters = Dictionary(uniqueKeysWithValues: parameters.flatMap { ($0.key, $0.value) })
                         guard let jsonParameters = try? JSONSerialization
                                 .data(
                                     withJSONObject: parameters,
